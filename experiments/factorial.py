@@ -106,6 +106,18 @@ CONDITIONS = {
 
 # Limiar de cobertura de pista abaixo do qual a falha é atribuída à EVIDÊNCIA e
 # não ao julgamento. Escolhido antes de olhar resultado; declarado no JSON.
+#
+# ATENÇÃO — este rótulo é um PROXY PROVISÓRIO, e a comparação entre provedores
+# de 2026-09-19 mostrou que ele é fraco. As mesmas 30 consultas, com os mesmos
+# textos e portanto a mesma cobertura de pista, produziram 1 erro de "evidência"
+# com o modelo de 27B e 10 com o de 8B. Se o texto fosse mesmo insuficiente,
+# nenhum dos dois resolveria. Logo o que o proxy chamou de "o fato não está na
+# fonte" era, naquelas consultas, falha de JULGAMENTO do modelo menor.
+#
+# O instrumento correto é o rótulo humano de cobertura da fonte previsto em
+# `docs/PROTOCOLO-TOIS.md` §5 e implementado em `experiments/annotate.py`. Até
+# ele existir, ler esta coluna como "candidato a erro de evidência", nunca como
+# atribuição.
 EVIDENCE_COVERAGE_FLOOR = 0.34
 
 

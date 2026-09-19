@@ -85,8 +85,22 @@ Mesmos *prompts*, mesmo *ledger*, mesmo formato de saída. O provedor local
 | modelo | `qwen/qwen3.8-27b`, hospedado | `mlx-community/Qwen3-8B-4bit` |
 | cota | 200 mil *tokens*/dia, 7 mil/min | nenhuma |
 | reprodutível por terceiros | **não** — o modelo muda sob nós | **sim** — pesos fixados por *commit hash* |
-| latência p50 medida | 683 ms | medir nesta máquina |
+| latência p50 medida | **683 ms** | **~15 s** (M5, prompt de ~2,5 mil tokens) |
 | papel | células primárias, que espelham o que está no ar | repetições, ablações, varreduras caras |
+
+**A latência local é 22× a do Groq, e isso não muda a decisão — reforça.** Medido
+nesta máquina com prompt do tamanho de produção: 12,5 s dos 15 s são **prefill**;
+gerar os ~35 tokens de resposta custa 0,7 s. O prefill roda a ~180 tokens/s, que
+é o teto do GPU de um M5 base para um 8B em 4 bits.
+
+Duas leituras:
+
+1. **Para o laboratório, é barato.** O `object` inteiro (42 consultas, ~84
+   chamadas) sai em ~30 minutos sem supervisão e sem cota, contra vários dias de
+   orçamento gratuito no provedor hospedado.
+2. **Para produção, fecha a questão.** Se são 15 s no GPU de um M5, na VM ARM da
+   Oracle — 4 núcleos, sem GPU — é pior por uma margem larga. Produção continua
+   hospedada, e o custo do verificador continua sendo a premissa da RQ2.
 
 ### Por que Qwen3-8B em 4 bits
 
