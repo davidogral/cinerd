@@ -461,16 +461,18 @@ def raw_searches(days: int = 30, limit: int = 500) -> list[dict]:
                     f = json.loads(filters) if filters else {}
                 except Exception:
                     f = {}
-                out.append({
-                    "ts": ts,
-                    "query": query,
-                    "filters": f,
-                    "n_results": n_results,
-                    "found": bool(found),
-                    "latency_ms": latency_ms,
-                    "user_id": user_id,
-                    "item_id": item_id,
-                })
+                out.append(
+                    {
+                        "ts": ts,
+                        "query": query,
+                        "filters": f,
+                        "n_results": n_results,
+                        "found": bool(found),
+                        "latency_ms": latency_ms,
+                        "user_id": user_id,
+                        "item_id": item_id,
+                    }
+                )
     except Exception:
         pass
     return out
