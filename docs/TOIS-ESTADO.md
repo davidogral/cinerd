@@ -201,6 +201,27 @@ A política aprendida **empata com o controle aleatório de mesmo orçamento**. 
 portão do protocolo (§8.4), isso significa que ela **não** "aprendeu quando
 chamar" — H3 não se sustenta nesta amostra, e é assim que deve ser reportado.
 
+**Controle corrigido (2026-09-19).** Comparar contra **um** sorteio era fraco:
+com n=30 e k=14 a variância do sorteio é enorme, e o empate em +0,133 era ele
+próprio coincidência. Substituído por 10 000 seleções aleatórias de exatamente k
+consultas:
+
+| política | acionadas | qualidade | nulo: média [IC 95%] | percentil | p |
+|---|---:|---:|---|---:|---:|
+| aprendida@0,5 | 14/30 | 0,500 | 0,491 [0,400; 0,567] | **P44** | 0,56 |
+| regras | 23/30 | 0,533 | 0,572 [0,500; 0,633] | **P8** | 0,92 |
+
+A política aprendida **é** o acaso (P44), não empata com ele por pouco. E a
+heurística escrita à mão **anti-seleciona**: no orçamento dela é pior que 92% dos
+sorteios de mesmo tamanho. Achado novo e útil — a regra "óbvia" escolhe
+sistematicamente errado.
+
+**Sobre a margem do oráculo:** +0,300 contra +0,267 é **uma consulta** de
+diferença (nove melhorias líquidas contra oito). O que é amplo não é a qualidade,
+é a **economia de chamadas**: 30% contra 100%. A RQ2 deve ser formulada assim —
+não "a política melhora o ranking", mas "a política preserva o ranking gastando
+muito menos".
+
 Duas ressalvas, nas duas direções:
 - 30 consultas com 9 positivos e validação cruzada 5-fold é grosseiramente
   subdimensionado. Não é evidência de que os sinais baratos não sirvam; é
@@ -238,6 +259,19 @@ que marca a rodada como inválida acima de 2% de falha.
 
 > Isto é, em si, um resultado do plano: sem o *ledger* por chamada que ele exige,
 > a medição anterior teria entrado no artigo atenuada e ninguém perceberia.
+
+## Defeitos de layout: uma classe que passa por revisão humana
+
+Três tabelas transbordavam a coluna e as réguas do `booktabs` **riscavam o texto
+da coluna vizinha**. O LaTeX não avisa: `\centering` suprime o `Overfull \hbox`,
+então nem o log nem `ruff`-equivalentes pegam. Passou por revisão humana também.
+
+Corrigido: as três tabelas com coluna de IC viraram `table*` (largura total), e
+quatro tabelas estreitas ganharam `\tabcolsep` menor. Ficou um detector em
+`ferramentas-artigo/check_layout.py` (local, como o artigo) que compara cada
+régua e cada linha de texto com a borda da coluna inferida pelo modo das
+extremidades do corpo de texto. **Rodar antes de qualquer compartilhamento do
+PDF.**
 
 ## Bloqueios reais
 
