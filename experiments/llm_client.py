@@ -154,8 +154,18 @@ class LLMRunner:
         prices: Optional[dict[str, PriceTable]] = None,
         ledger: bool = True,
         provider: str = "groq",
+        provider_understand: Optional[str] = None,
+        provider_confirm: Optional[str] = None,
     ):
         self.run_id = run_id
+        # Provedor POR ETAPA. Sem isso, trocar o provedor troca as duas etapas de
+        # uma vez, e a comparação deixa de isolar o verificador — foi o que
+        # aconteceu na execução de 2026-09-19 e só apareceu porque C10 divergiu
+        # numa consulta (o classificador de tipo mudou junto).
+        self.providers = {
+            "understand": provider_understand or provider,
+            "confirm": provider_confirm or provider,
+        }
         self.provider = provider
         self.quota_exhausted: Optional[str] = None
         self.prices = prices or {}
@@ -199,8 +209,16 @@ class LLMRunner:
             with open(self._ledger_path, "a", encoding="utf-8") as fh:
                 fh.write(json.dumps(asdict(rec), ensure_ascii=False) + "\n")
 
-    def _post(self, model: str, system: str, user: str, max_tokens: int, extra: Optional[dict] = None) -> CallRecord:
-        if self.provider == "local":
+    def _post(
+        self,
+        model: str,
+        system: str,
+        user: str,
+        max_tokens: int,
+        extra: Optional[dict] = None,
+        stage: str = "",
+    ) -> CallRecord:
+        if self.providers.get(stage, self.provider) == "local":
             return self._post_local(system, user, max_tokens)
         body = {
             "model": model,
@@ -326,7 +344,14 @@ class LLMRunner:
             self._log(rec)
             return plan, rec
 
-        rec = self._post(query_llm.GROQ_MODEL, query_llm._SYSTEM, query.strip(), 800, {"reasoning_effort": "low"})
+        rec = self._post(
+            query_llm.GROQ_MODEL,
+            query_llm._SYSTEM,
+            query.strip(),
+            800,
+            {"reasoning_effort": "low"},
+            stage="understand",
+        )
         rec.stage, rec.qid, rec.repeat = "understand", qid, repeat
         plan: dict = {}
         if rec.ok:
@@ -361,7 +386,7 @@ class LLMRunner:
             for i, c in enumerate(candidates, 1)
         ]
         user = "Descrição: " + query + "\n\nCandidatos:\n" + "\n".join(lines)
-        rec = self._post(query_llm.GROQ_RERANK_MODEL, query_llm._RERANK_SYSTEM, user, 500)
+        rec = self._post(query_llm.GROQ_RERANK_MODEL, query_llm._RERANK_SYSTEM, user, 500, stage="confirm")
         rec.stage, rec.qid, rec.repeat = "confirm", qid, repeat
 
         picks: list[int] = []
@@ -487,6 +512,50 @@ def _local_revision() -> Optional[str]:
         return os.path.basename(path.rstrip("/"))
     except Exception:
         return None
+
+
+def local_runtime() -> dict:
+    """Identificação completa do runtime local, para o artigo e para replicação.
+
+    Nome de modelo sozinho não reproduz nada: a mesma família em outra
+    quantização, outro framework ou outro template de chat é outro sistema."""
+    info: dict = {"model": LOCAL_MODEL, "revision": _local_cache.get("revision") or _local_revision()}
+    try:
+        import glob as _glob
+        import json as _json
+
+        cfg = _glob.glob(
+            os.path.expanduser(
+                f"~/.cache/huggingface/hub/models--{LOCAL_MODEL.replace('/', '--')}/snapshots/*/config.json"
+            )
+        )
+        if cfg:
+            with open(cfg[0], encoding="utf-8") as fh:
+                d = _json.load(fh)
+            info["architecture"] = d.get("model_type")
+            info["quantization"] = d.get("quantization")
+            info["max_position_embeddings"] = d.get("max_position_embeddings")
+    except Exception:
+        pass
+    try:
+        import platform
+        import subprocess as _sp
+
+        import mlx.core as _mx
+        import mlx_lm as _mlxlm
+
+        info["framework"] = f"mlx-lm {getattr(_mlxlm, '__version__', '?')} / mlx {getattr(_mx, '__version__', '?')}"
+        info["hardware"] = _sp.run(
+            ["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True, timeout=5
+        ).stdout.strip()
+        mem = _sp.run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True, timeout=5).stdout.strip()
+        info["unified_memory_gib"] = round(int(mem) / 2**30) if mem.isdigit() else None
+        info["os"] = f"macOS {platform.mac_ver()[0]}"
+    except Exception:
+        pass
+    info["chat_template"] = "tokenizer.apply_chat_template(add_generation_prompt=True, enable_thinking=False)"
+    info["generation"] = {"temperature": 0, "max_tokens_confirm": 500, "max_tokens_understand": 800}
+    return info
 
 
 def load_prices(path: Optional[str]) -> dict[str, PriceTable]:
