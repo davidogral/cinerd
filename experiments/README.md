@@ -70,6 +70,56 @@ set -a && . ./.env && set +a
 .venv/bin/python -m experiments.factorial --split hard --prices experiments/prices.json
 ```
 
+## Dois provedores: hospedado e local
+
+```bash
+.venv/bin/python -m experiments.factorial --split hard                    # Groq (= produção)
+.venv/bin/python -m experiments.factorial --split hard --provider local   # MLX, sem cota
+```
+
+Mesmos *prompts*, mesmo *ledger*, mesmo formato de saída. O provedor local
+**acrescenta** uma condição; não substitui a de produção.
+
+| | `groq` (produção) | `local` (MLX) |
+|---|---|---|
+| modelo | `qwen/qwen3.8-27b`, hospedado | `mlx-community/Qwen3-8B-4bit` |
+| cota | 200 mil *tokens*/dia, 7 mil/min | nenhuma |
+| reprodutível por terceiros | **não** — o modelo muda sob nós | **sim** — pesos fixados por *commit hash* |
+| latência p50 medida | 683 ms | medir nesta máquina |
+| papel | células primárias, que espelham o que está no ar | repetições, ablações, varreduras caras |
+
+### Por que Qwen3-8B em 4 bits
+
+A justificativa completa está no topo da seção do provedor local em
+[`llm_client.py`](llm_client.py). Em resumo:
+
+1. **Mesma família e geração que produção** (`qwen3.8-27b`) — o contraste fica
+   sendo escala + hospedagem. Trocar de família ou de geração somaria um
+   confundimento e tornaria qualquer diferença inatribuível.
+2. **Sem raciocínio oculto**, e isso é restrição dura: o achado de 2026-09-09
+   mostra que raciocínio oculto faz o modelo responder pela memória paramétrica
+   em vez de examinar a lista de candidatos. Qwen3 tem modo *thinking*
+   alternável, desligado explicitamente aqui (`enable_thinking=False`). Pela
+   mesma razão, um destilado de R1 está fora.
+3. **Multilíngue com português** — consultas e sinopses são pt-BR.
+4. **Apache-2.0** — o protocolo §7.3 exige licença de uso verificável.
+5. **Reprodutível fora do Mac** — os pesos upstream rodam em llama.cpp, vLLM e
+   transformers; MLX é só o runtime local.
+6. **Cabe com folga** — ~4,5 GB ao lado do e5-large e do índice.
+
+Ressalva declarada: 4 bits é quantização, então a comparação com produção
+mistura quantização com escala. Isso é reportado, não escondido.
+
+**Instalação** (não entra em `requirements.txt` nem em `requirements-ci.txt` —
+produção não usa e o CI não roda em Apple Silicon):
+
+```bash
+.venv/bin/pip install mlx-lm
+```
+
+O import é **tardio**, dentro da função: importar mlx no topo do módulo
+quebraria a suíte de testes em qualquer máquina sem Apple Silicon.
+
 ## O que **não** está aqui
 
 - **Números do artigo.** Saem de execução real destes scripts contra um *commit*

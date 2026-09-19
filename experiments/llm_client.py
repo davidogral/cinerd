@@ -118,6 +118,25 @@ def _sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def _unfence(text: str) -> str:
+    """Tira cerca de markdown e prosa ao redor do JSON.
+
+    A Groq com `response_format` implícito devolve JSON limpo; um modelo local
+    instruído devolve, com frequência, ```json … ``` ou uma frase antes. Cortar
+    isso aqui é a diferença entre "o modelo local não funciona" e "o parser era
+    estrito demais" — e as duas conclusões levariam a decisões opostas."""
+    t = (text or "").strip()
+    if "```" in t:
+        parts = t.split("```")
+        for part in parts[1:]:
+            body = part[4:].lstrip() if part.lower().startswith("json") else part
+            if body.strip().startswith("{"):
+                t = body
+                break
+    i, j = t.find("{"), t.rfind("}")
+    return t[i : j + 1] if 0 <= i < j else t
+
+
 class QuotaExhausted(RuntimeError):
     """Cota DIARIA do provedor esgotada - esperar dentro da execucao nao resolve.
 
@@ -129,8 +148,15 @@ class QuotaExhausted(RuntimeError):
 class LLMRunner:
     """Executa e registra as duas etapas de LLM. Um `LLMRunner` por rodada."""
 
-    def __init__(self, run_id: str, prices: Optional[dict[str, PriceTable]] = None, ledger: bool = True):
+    def __init__(
+        self,
+        run_id: str,
+        prices: Optional[dict[str, PriceTable]] = None,
+        ledger: bool = True,
+        provider: str = "groq",
+    ):
         self.run_id = run_id
+        self.provider = provider
         self.quota_exhausted: Optional[str] = None
         self.prices = prices or {}
         self.records: list[CallRecord] = []
@@ -174,6 +200,8 @@ class LLMRunner:
                 fh.write(json.dumps(asdict(rec), ensure_ascii=False) + "\n")
 
     def _post(self, model: str, system: str, user: str, max_tokens: int, extra: Optional[dict] = None) -> CallRecord:
+        if self.provider == "local":
+            return self._post_local(system, user, max_tokens)
         body = {
             "model": model,
             "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
@@ -241,6 +269,52 @@ class LLMRunner:
                 return rec
         return rec
 
+    def _post_local(self, system: str, user: str, max_tokens: int) -> CallRecord:
+        """Mesma etapa, modelo local. Mesmo prompt, mesmo formato de registro.
+
+        O `enable_thinking=False` é o ponto que importa: Qwen3 gera um bloco de
+        raciocínio por padrão, e o achado de 2026-09-09 mostra que raciocínio
+        oculto faz o modelo responder pela memória em vez de examinar a lista —
+        exatamente o que a etapa de confirmação NÃO pode fazer."""
+        from mlx_lm import generate  # noqa: PLC0415
+
+        model, tokenizer = _local_model()
+        rec = CallRecord(
+            stage="",
+            qid="",
+            repeat=0,
+            model=f"{LOCAL_MODEL}@{_local_cache.get('revision') or '?'}",
+            status=0,
+            ok=False,
+            latency_ms=0.0,
+            prompt_sha256=_sha(system + "\n" + user),
+        )
+        messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        try:
+            prompt = tokenizer.apply_chat_template(messages, add_generation_prompt=True, enable_thinking=False)
+        except TypeError:  # tokenizer sem o parâmetro (modelo sem modo thinking)
+            prompt = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
+
+        rec.tokens_in = len(prompt) if isinstance(prompt, list) else len(tokenizer.encode(prompt))
+        t0 = time.perf_counter()
+        try:
+            text = generate(model, tokenizer, prompt=prompt, max_tokens=max_tokens, verbose=False)
+        except Exception as exc:
+            rec.latency_ms = (time.perf_counter() - t0) * 1000.0
+            rec.error = f"{type(exc).__name__}: {exc}"[:300]
+            return rec
+        rec.latency_ms = (time.perf_counter() - t0) * 1000.0
+        rec.status = 200
+        rec.tokens_out = len(tokenizer.encode(text))
+        # Qwen3 pode emitir <think>…</think> mesmo desligado; o JSON vem depois.
+        if "</think>" in text:
+            text = text.split("</think>", 1)[1]
+        rec.response_raw = text.strip()
+        rec.response_sha256 = _sha(rec.response_raw)
+        rec.cost_usd = self._price(rec.model).cost(rec.tokens_in, rec.tokens_out)
+        rec.ok = True
+        return rec
+
     # ------------------------------------------------------------- etapa A
     def understand(self, qid: str, query: str, repeat: int = 0, use_cache: bool = True) -> tuple[dict, CallRecord]:
         """Etapa A (entendimento). Devolve (plano, registro). Falha vira plano vazio
@@ -257,7 +331,7 @@ class LLMRunner:
         plan: dict = {}
         if rec.ok:
             try:
-                plan = json.loads(rec.response_raw or "")
+                plan = json.loads(_unfence(rec.response_raw or ""))
                 rec.parsed = plan
             except Exception as exc:
                 rec.ok = False
@@ -293,7 +367,7 @@ class LLMRunner:
         picks: list[int] = []
         if rec.ok:
             try:
-                data = json.loads(rec.response_raw or "")
+                data = json.loads(_unfence(rec.response_raw or ""))
                 rec.parsed = data
                 seen: set = set()
                 for item in data.get("confirmados") or []:
@@ -356,6 +430,63 @@ class LLMRunner:
             "cost_usd_total": round(sum(r.cost_usd for r in real), 6),
             "failure_rate": round(sum(1 for r in graded if not r.ok) / len(graded), 4) if graded else 0.0,
         }
+
+
+# ---------------------------------------------------------------------------
+# Provedor local (MLX)
+#
+# Por que Qwen3-8B em 4 bits, e não outro:
+#
+# 1. **Mesma família e mesma geração que produção** (`qwen/qwen3.8-27b`). O
+#    contraste fica sendo escala + hospedagem. Trocar de família (Llama,
+#    Mistral) ou de geração (Qwen2.5) somaria um confundimento e tornaria
+#    qualquer diferença observada inatribuível.
+# 2. **Sem raciocínio oculto.** É restrição dura deste projeto, não preferência:
+#    um modelo de raciocínio em esforço baixo responde pela memória paramétrica
+#    em vez de examinar os candidatos, e em esforço médio gasta 9–10 mil tokens
+#    por chamada (ver `core/query_llm.rerank_confirm`, achado de 2026-09-09).
+#    Qwen3 tem modo "thinking" alternável, então ele é **explicitamente
+#    desligado** no template. Pela mesma razão, um destilado de R1 está fora.
+# 3. **Multilíngue com português** — consultas e sinopses são pt-BR.
+# 4. **Apache-2.0**: o protocolo §7.3 exige licença de uso verificável para as
+#    respostas entrarem no material replicável.
+# 5. **Reprodutível fora do Mac**: os pesos upstream rodam em llama.cpp/vLLM/
+#    transformers. MLX é só o runtime local. O ledger grava o *commit hash* do
+#    repositório, não só o nome, para a verificação ser exata.
+# 6. **Cabe com folga**: ~4,5 GB ao lado do e5-large (~2 GB) e do índice.
+#
+# Ressalva declarada: 4 bits é quantização, então a comparação com produção
+# mistura quantização com escala. Isso é reportado, não escondido.
+LOCAL_MODEL = os.environ.get("RECOMENDAI_LOCAL_MODEL", "mlx-community/Qwen3-8B-4bit")
+LOCAL_MAX_TOKENS = int(os.environ.get("RECOMENDAI_LOCAL_MAX_TOKENS", "512"))
+
+_local_cache: dict = {}
+
+
+def _local_model():
+    """Carrega o modelo uma vez por processo. Import tardio de propósito: o CI
+    instala `requirements-ci.txt`, que não tem mlx, e importar aqui no topo
+    quebraria a suíte inteira numa máquina sem Apple Silicon."""
+    if "model" not in _local_cache:
+        from mlx_lm import load  # noqa: PLC0415
+
+        model, tokenizer = load(LOCAL_MODEL)
+        _local_cache["model"] = model
+        _local_cache["tokenizer"] = tokenizer
+        _local_cache["revision"] = _local_revision()
+    return _local_cache["model"], _local_cache["tokenizer"]
+
+
+def _local_revision() -> Optional[str]:
+    """Commit hash do snapshot no cache do HuggingFace — a identidade exata dos
+    pesos, que o nome do repositório sozinho não dá."""
+    try:
+        from huggingface_hub import snapshot_download
+
+        path = snapshot_download(LOCAL_MODEL, local_files_only=True)
+        return os.path.basename(path.rstrip("/"))
+    except Exception:
+        return None
 
 
 def load_prices(path: Optional[str]) -> dict[str, PriceTable]:
