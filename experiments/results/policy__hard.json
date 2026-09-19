@@ -20,7 +20,62 @@
       "feature": "r_margin_1_2_rel",
       "value": 0.189315
     },
-    "exploratory": true
+    "exploratory": true,
+    "audit": {
+      "positive_label": "gain > 0 (a confirmação melhorou a métrica); gain == 0 conta como negativo",
+      "n_positive": 9,
+      "n_negative": 21,
+      "standardization": "StandardScaler dentro do Pipeline, ajustado DENTRO de cada fold",
+      "feature_selection": "nenhuma; exclusão fixa a priori de o_n_sent e e_n_candidates (constantes)",
+      "n_features": 30,
+      "features": [
+        "e_cov_gap",
+        "e_cov_max",
+        "e_cov_mean",
+        "e_cov_top1",
+        "e_empty_ratio",
+        "e_mean_chars",
+        "e_min_chars",
+        "e_n_cov_ge_half",
+        "o_est_tokens_in",
+        "o_prompt_chars",
+        "q_caps_mid",
+        "q_has_digit",
+        "q_lang_margin",
+        "q_lang_pt",
+        "q_max_idf",
+        "q_mean_idf",
+        "q_n_chars",
+        "q_n_content_tokens",
+        "q_n_words",
+        "q_oov_ratio",
+        "r_channels_active",
+        "r_channels_agree_top1",
+        "r_distinct_channel_top1",
+        "r_entropy_top20",
+        "r_lex_sem_overlap",
+        "r_margin_1_2",
+        "r_margin_1_2_rel",
+        "r_margin_1_5_rel",
+        "r_std_top20",
+        "r_top1"
+      ],
+      "hyperparameters": {
+        "C": 0.5,
+        "penalty": "l2",
+        "solver": "lbfgs",
+        "max_iter": 2000,
+        "class_weight": "balanced"
+      },
+      "hyperparameter_search": "nenhuma — C fixo, não ajustado contra o resultado",
+      "decision_threshold": 0.5,
+      "decision_threshold_choice": "padrão 0,5; a fração acionada é consequência, não alvo",
+      "cv_folds": 5,
+      "permutation_control": {
+        "n_perm": 10000,
+        "k": 14
+      }
+    }
   },
   "policies": {
     "nunca": {
@@ -120,6 +175,28 @@
       "latency_p50_ms": 593.1,
       "latency_p95_ms": 1182.1,
       "net_utility": 0.1207
+    }
+  },
+  "permutation_null": {
+    "aprendida@0.5": {
+      "n_perm": 10000,
+      "null_mean": 0.4909,
+      "null_sd": 0.0473,
+      "null_ci_low": 0.4,
+      "null_ci_high": 0.5667,
+      "observed": 0.5,
+      "percentile": 44.2,
+      "p_one_sided": 0.5584
+    },
+    "regras": {
+      "n_perm": 10000,
+      "null_mean": 0.5717,
+      "null_sd": 0.0402,
+      "null_ci_low": 0.5,
+      "null_ci_high": 0.6333,
+      "observed": 0.5333,
+      "percentile": 8.3,
+      "p_one_sided": 0.9168
     }
   },
   "coefficients": {

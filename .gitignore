@@ -133,3 +133,6 @@ figuras-artigo/
 # ==============================
 experiments/data/
 experiments/results/ledger/
+
+ferramentas-artigo/
+.pdfcheck/

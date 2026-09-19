@@ -199,6 +199,47 @@ def policy_oracle(rows) -> np.ndarray:
     return np.array([r["gain"] > 0 for r in rows], dtype=bool)
 
 
+def permutation_null(rows: Sequence[dict], k: int, n_perm: int = 10_000, seed: int = SEED) -> np.ndarray:
+    """Distribuição da qualidade sob seleção **aleatória de exatamente `k`** consultas.
+
+    Um único sorteio pode, por acaso, empatar com a política — com n=30 e k=14 a
+    variância é grande. O controle correto para "a política aprendeu a escolher?"
+    é a distribuição inteira sob o mesmo orçamento de chamadas: a política só
+    demonstra escolher bem se cair na cauda superior dela.
+
+    Devolve `n_perm` valores da métrica sob sorteio sem reposição."""
+    rng = np.random.default_rng(seed)
+    n = len(rows)
+    before = np.array([r["before"] for r in rows], dtype=np.float64)
+    after = np.array([r["after"] for r in rows], dtype=np.float64)
+    if k <= 0:
+        return np.full(n_perm, before.mean())
+    if k >= n:
+        return np.full(n_perm, after.mean())
+    # k índices distintos por linha, sem laço Python: ordena ruído e pega o topo.
+    noise = rng.random((n_perm, n))
+    picks = np.argpartition(noise, k - 1, axis=1)[:, :k]
+    quality = np.tile(before, (n_perm, 1))
+    np.put_along_axis(quality, picks, after[picks], axis=1)
+    return quality.mean(axis=1)
+
+
+def null_position(null: np.ndarray, observed: float) -> dict:
+    """Onde a política cai na distribuição nula, e o p unilateral."""
+    n_perm = int(null.size)
+    p_right = float((null >= observed).sum() + 1) / (n_perm + 1)  # estimador sem viés
+    return {
+        "n_perm": n_perm,
+        "null_mean": round(float(null.mean()), 4),
+        "null_sd": round(float(null.std(ddof=1)), 4),
+        "null_ci_low": round(float(np.percentile(null, 2.5)), 4),
+        "null_ci_high": round(float(np.percentile(null, 97.5)), 4),
+        "observed": round(float(observed), 4),
+        "percentile": round(float((null < observed).mean() * 100), 1),
+        "p_one_sided": round(p_right, 4),
+    }
+
+
 def policy_rules(rows) -> np.ndarray:
     """Legível e sem treino: chama quando o ranking está **inseguro** (margem
     relativa pequena entre #1 e #2) **ou** quando há candidato abaixo do #1 com
@@ -230,14 +271,48 @@ def apply_threshold(rows, feature: str, t: float, invert: bool) -> np.ndarray:
     return vals >= t if invert else vals <= t
 
 
+# Hiperparâmetros FIXOS, escolhidos a priori e nunca ajustados contra o
+# resultado — se fossem ajustados, a validação cruzada estaria contaminada e o
+# número reportado seria otimista.
+LOGREG = {
+    "C": 0.5,  # regularização L2; não ajustada
+    "penalty": "l2",
+    "solver": "lbfgs",
+    "max_iter": 2000,
+    "class_weight": "balanced",  # os positivos são minoria
+}
+DECISION_THRESHOLD = 0.5  # limiar padrão; NÃO ajustado (ver docstring)
+
+
 class LearnedPolicy:
     """Regressão logística regularizada sobre P(a confirmação ajuda).
 
     Simples de propósito: com dezenas a poucas centenas de consultas rotuladas,
     um modelo maior aprende o ruído do conjunto. O que a proposta precisa mostrar
-    não é capacidade, é que os sinais **baratos** carregam informação."""
+    não é capacidade, é que os sinais **baratos** carregam informação.
 
-    def __init__(self, names: Sequence[str], C: float = 0.5, seed: int = SEED):
+    Protocolo, para o experimento ser auditável:
+
+    * **Rótulo positivo**: `gain > 0`, isto é, a confirmação **melhorou** a
+      métrica naquela consulta. Consultas inalteradas (`gain == 0`) entram como
+      negativas — a política deve aprender a não gastar chamada nelas tanto
+      quanto deve evitar as que pioram.
+    * **Padronização dentro do fold**: `StandardScaler` está dentro do
+      `Pipeline`, e o `Pipeline` é ajustado **dentro de cada partição de
+      treino**. Nenhuma estatística do conjunto de teste entra na padronização.
+    * **Seleção de características**: não há. Todos os sinais de
+      `experiments/features.py` entram, exceto dois constantes por construção
+      (`o_n_sent`, `e_n_candidates`), excluídos **a priori** por nome — exclusão
+      fixa, não guiada por dado.
+    * **Regularização**: `C` fixo em 0.5, nunca ajustado contra o resultado.
+      Não há busca de hiperparâmetro, logo não há a contaminação que uma busca
+      interna mal feita introduziria.
+    * **Limiar de decisão**: 0,5, o padrão. A fração acionada (47% no `hard`) é
+      **consequência** do limiar, não um alvo escolhido. Varrer o limiar para
+      maximizar a métrica seria ajustar contra o teste; a varredura aparece
+      apenas como a fronteira qualidade--custo, que é descritiva."""
+
+    def __init__(self, names: Sequence[str], C: float = LOGREG["C"], seed: int = SEED):
         from sklearn.linear_model import LogisticRegression
         from sklearn.pipeline import Pipeline
         from sklearn.preprocessing import StandardScaler
@@ -246,7 +321,17 @@ class LearnedPolicy:
         self.model = Pipeline(
             [
                 ("scale", StandardScaler()),
-                ("clf", LogisticRegression(C=C, max_iter=2000, class_weight="balanced", random_state=seed)),
+                (
+                    "clf",
+                    LogisticRegression(
+                        C=C,
+                        penalty=LOGREG["penalty"],
+                        solver=LOGREG["solver"],
+                        max_iter=LOGREG["max_iter"],
+                        class_weight=LOGREG["class_weight"],
+                        random_state=seed,
+                    ),
+                ),
             ]
         )
         self.fitted = False
@@ -336,6 +421,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--beta", type=float, default=0.5, help="peso da fração de consultas PIORADAS")
     ap.add_argument("--threshold-feature", default="r_margin_1_2_rel")
     ap.add_argument("--seed", type=int, default=SEED)
+    ap.add_argument("--n-perm", type=int, default=10_000, help="sorteios da distribuição nula")
     ap.add_argument("--out")
     args = ap.parse_args(argv)
 
@@ -373,29 +459,60 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     # ---- políticas
     t = fit_threshold(rows, args.threshold_feature, invert=False)
+    learned_call = prob >= DECISION_THRESHOLD
     policies = {
         "nunca": policy_never(rows),
         "sempre": policy_always(rows),
         "limiar": apply_threshold(rows, args.threshold_feature, t, invert=False),
         "regras": policy_rules(rows),
-        "aprendida@0.5": prob >= 0.5,
+        f"aprendida@{DECISION_THRESHOLD}": learned_call,
         "oraculo": policy_oracle(rows),
     }
-    # controle de orçamento igual: aleatória com a MESMA fração da política aprendida
-    f_learned = float((prob >= 0.5).mean())
+    f_learned = float(learned_call.mean())
+    k_learned = int(learned_call.sum())
     policies[f"aleatoria@{f_learned:.2f}"] = policy_random(rows, f_learned, seed=args.seed)
 
     table = {name: evaluate(rows, call, args.lam, args.gamma, args.beta) for name, call in policies.items()}
 
+    # ---- controle de orçamento igual, como DISTRIBUIÇÃO, não sorteio único ----
+    null = permutation_null(rows, k_learned, n_perm=args.n_perm, seed=args.seed)
+    pos = null_position(null, table[f"aprendida@{DECISION_THRESHOLD}"]["quality"])
+    null_rules = permutation_null(rows, int(policy_rules(rows).sum()), n_perm=args.n_perm, seed=args.seed)
+    pos_rules = null_position(null_rules, table["regras"]["quality"])
+
     print(f"\n### Políticas — {mode}")
     print("| política | fração acionada | qualidade | Δ vs nunca | ajudou/piorou | US$/1k | p95 (ms) | utilidade |")
     print("|---|---:|---:|---:|---:|---:|---:|---:|")
-    for name in ("nunca", "sempre", f"aleatoria@{f_learned:.2f}", "limiar", "regras", "aprendida@0.5", "oraculo"):
+    ordem = (
+        "nunca",
+        "sempre",
+        f"aleatoria@{f_learned:.2f}",
+        "limiar",
+        "regras",
+        f"aprendida@{DECISION_THRESHOLD}",
+        "oraculo",
+    )
+    for name in ordem:
         r = table[name]
         print(
             f"| {name} | {r['fraction_called']:.2f} | {r['quality']:.3f} | {r['delta_vs_never']:+.3f} | "
             f"{r['helped']}/{r['hurt']} | {r['cost_usd_per_1k']:.3f} | {r['latency_p95_ms']:.0f} | {r['net_utility']:+.3f} |"
         )
+
+    print(f"\n### Controle de orçamento igual — distribuição de permutação ({args.n_perm} sorteios de {k_learned}/{n})")
+    print("| política | acionadas | qualidade | nulo: média [IC 95%] | percentil no nulo | p (unilateral) |")
+    print("|---|---:|---:|---|---:|---:|")
+    for nome, pp, kk in (
+        (f"aprendida@{DECISION_THRESHOLD}", pos, k_learned),
+        ("regras", pos_rules, int(policy_rules(rows).sum())),
+    ):
+        print(
+            f"| {nome} | {kk}/{n} | {pp['observed']:.3f} | "
+            f"{pp['null_mean']:.3f} [{pp['null_ci_low']:.3f}; {pp['null_ci_high']:.3f}] | "
+            f"P{pp['percentile']:.0f} | {pp['p_one_sided']:.3f} |"
+        )
+    print("\nUm sorteio único pode empatar com a política por acaso; a distribuição inteira")
+    print("é o controle honesto. A política só demonstra ESCOLHER se cair na cauda superior.")
 
     print(f"\nlimiar ajustado: {args.threshold_feature} ≤ {t:.4f}")
     if coefs:
@@ -430,8 +547,24 @@ def main(argv: Optional[list[str]] = None) -> int:
             "utility_weights": {"lambda_cost": args.lam, "gamma_latency": args.gamma, "beta_regression": args.beta},
             "threshold": {"feature": args.threshold_feature, "value": round(t, 6)},
             "exploratory": True,
+            "audit": {
+                "positive_label": "gain > 0 (a confirmação melhorou a métrica); gain == 0 conta como negativo",
+                "n_positive": n_help,
+                "n_negative": n - n_help,
+                "standardization": "StandardScaler dentro do Pipeline, ajustado DENTRO de cada fold",
+                "feature_selection": "nenhuma; exclusão fixa a priori de o_n_sent e e_n_candidates (constantes)",
+                "n_features": len(names),
+                "features": names,
+                "hyperparameters": LOGREG,
+                "hyperparameter_search": "nenhuma — C fixo, não ajustado contra o resultado",
+                "decision_threshold": DECISION_THRESHOLD,
+                "decision_threshold_choice": "padrão 0,5; a fração acionada é consequência, não alvo",
+                "cv_folds": args.cv,
+                "permutation_control": {"n_perm": args.n_perm, "k": k_learned},
+            },
         },
         "policies": table,
+        "permutation_null": {f"aprendida@{DECISION_THRESHOLD}": pos, "regras": pos_rules},
         "coefficients": coefs,
         "calibration": {"brier": brier(prob, rows), "reliability": reliability(prob, rows)},
         "frontier": front,
