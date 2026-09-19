@@ -1,0 +1,4189 @@
+{
+  "run": {
+    "kind": "prior-sweep",
+    "timestamp_utc": "2026-09-18T21:50:05Z",
+    "git_commit": "5c02c53",
+    "split": "all",
+    "dataset_sha1": "cf6aaec67c77afd44b79e9fc7761db3bd59ce8af",
+    "grid": [
+      0.0,
+      0.15,
+      0.35,
+      0.5,
+      0.7,
+      0.9,
+      1.2
+    ],
+    "production_prior": 0.35,
+    "learned_prior": 0.9,
+    "strata": [
+      {
+        "name": "cauda longa (<P50)",
+        "pct_low": 0.0,
+        "pct_high": 50.0
+      },
+      {
+        "name": "meio (P50–P90)",
+        "pct_low": 50.0,
+        "pct_high": 90.0
+      },
+      {
+        "name": "popular (P90–P99)",
+        "pct_low": 90.0,
+        "pct_high": 99.0
+      },
+      {
+        "name": "muito popular (≥P99)",
+        "pct_low": 99.0,
+        "pct_high": 100.01
+      }
+    ],
+    "target_catalog_pct": {
+      "median": 99.1,
+      "min": 0.0,
+      "p25": 97.6
+    }
+  },
+  "summary": {
+    "n": 234,
+    "by_prior": {
+      "0.0": {
+        "ndcg@10": 0.6288,
+        "success@1": 0.5,
+        "median_rank": 1
+      },
+      "0.15": {
+        "ndcg@10": 0.6711,
+        "success@1": 0.5342,
+        "median_rank": 1
+      },
+      "0.35": {
+        "ndcg@10": 0.7094,
+        "success@1": 0.5897,
+        "median_rank": 1
+      },
+      "0.5": {
+        "ndcg@10": 0.7191,
+        "success@1": 0.5855,
+        "median_rank": 1
+      },
+      "0.7": {
+        "ndcg@10": 0.7279,
+        "success@1": 0.594,
+        "median_rank": 1
+      },
+      "0.9": {
+        "ndcg@10": 0.736,
+        "success@1": 0.6068,
+        "median_rank": 1
+      },
+      "1.2": {
+        "ndcg@10": 0.7341,
+        "success@1": 0.6111,
+        "median_rank": 1
+      }
+    },
+    "by_stratum": {
+      "cauda longa (<P50)": {
+        "n": 2,
+        "ndcg@10": {
+          "prior_0.35": 0.0,
+          "prior_0.9": 0.0,
+          "delta": 0.0,
+          "ci_low": 0.0,
+          "ci_high": 0.0,
+          "wins": 0,
+          "losses": 0
+        },
+        "success@1": {
+          "prior_0.35": 0.0,
+          "prior_0.9": 0.0,
+          "delta": 0.0,
+          "ci_low": 0.0,
+          "ci_high": 0.0,
+          "wins": 0,
+          "losses": 0
+        }
+      },
+      "meio (P50–P90)": {
+        "n": 11,
+        "ndcg@10": {
+          "prior_0.35": 0.7854,
+          "prior_0.9": 0.4921,
+          "delta": -0.2933,
+          "ci_low": -0.4904,
+          "ci_high": -0.1292,
+          "wins": 0,
+          "losses": 7
+        },
+        "success@1": {
+          "prior_0.35": 0.5455,
+          "prior_0.9": 0.2727,
+          "delta": -0.2727,
+          "ci_low": -0.5455,
+          "ci_high": 0.0,
+          "wins": 0,
+          "losses": 3
+        }
+      },
+      "popular (P90–P99)": {
+        "n": 94,
+        "ndcg@10": {
+          "prior_0.35": 0.7186,
+          "prior_0.9": 0.7333,
+          "delta": 0.0147,
+          "ci_low": -0.0093,
+          "ci_high": 0.039,
+          "wins": 13,
+          "losses": 7
+        },
+        "success@1": {
+          "prior_0.35": 0.5745,
+          "prior_0.9": 0.5851,
+          "delta": 0.0106,
+          "ci_low": -0.0319,
+          "ci_high": 0.0532,
+          "wins": 3,
+          "losses": 2
+        }
+      },
+      "muito popular (≥P99)": {
+        "n": 127,
+        "ndcg@10": {
+          "prior_0.35": 0.7072,
+          "prior_0.9": 0.7708,
+          "delta": 0.0636,
+          "ci_low": 0.0391,
+          "ci_high": 0.0921,
+          "wins": 26,
+          "losses": 0
+        },
+        "success@1": {
+          "prior_0.35": 0.6142,
+          "prior_0.9": 0.6614,
+          "delta": 0.0472,
+          "ci_low": 0.0157,
+          "ci_high": 0.0866,
+          "wins": 6,
+          "losses": 0
+        }
+      }
+    },
+    "contrast": {
+      "ndcg@10": {
+        "n": 234,
+        "n_clusters": 234,
+        "mean_a": 0.7093780320211691,
+        "mean_b": 0.7360125930822746,
+        "delta": 0.026634561061105403,
+        "ci_low": 0.0052421400060678365,
+        "ci_high": 0.04815956199174208,
+        "ci_halfwidth": 0.021458710992837124,
+        "p_value": 0.0142,
+        "wins": 39,
+        "losses": 14,
+        "ties": 181,
+        "n_boot": 10000,
+        "seed": 20260918,
+        "alpha": 0.05
+      },
+      "success@1": {
+        "n": 234,
+        "n_clusters": 234,
+        "mean_a": 0.5897435897435898,
+        "mean_b": 0.6068376068376068,
+        "delta": 0.017094017094017096,
+        "ci_low": -0.01282051282051282,
+        "ci_high": 0.04700854700854701,
+        "ci_halfwidth": 0.029914529914529912,
+        "p_value": 0.347,
+        "wins": 9,
+        "losses": 5,
+        "ties": 220,
+        "n_boot": 10000,
+        "seed": 20260918,
+        "alpha": 0.05
+      }
+    }
+  },
+  "per_query": [
+    {
+      "qid": "v1-core-00",
+      "split": "dev",
+      "title": "Amnésia",
+      "relevant_id": 77,
+      "target_vote_count": 15903.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-01",
+      "split": "dev",
+      "title": "Parasita",
+      "relevant_id": 496243,
+      "target_vote_count": 20141.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-02",
+      "split": "dev",
+      "title": "O Iluminado",
+      "relevant_id": 694,
+      "target_vote_count": 18615.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-03",
+      "split": "dev",
+      "title": "Tubarão",
+      "relevant_id": 578,
+      "target_vote_count": 11308.0,
+      "target_catalog_pct": 98.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-04",
+      "split": "dev",
+      "title": "Whiplash: Em Busca da Perfeição",
+      "relevant_id": 244786,
+      "target_vote_count": 16307.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-05",
+      "split": "test",
+      "title": "O Grande Truque",
+      "relevant_id": 1124,
+      "target_vote_count": 17218.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v1-core-06",
+      "split": "dev",
+      "title": "Seven - Os Sete Crimes Capitais",
+      "relevant_id": 807,
+      "target_vote_count": 22617.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-07",
+      "split": "dev",
+      "title": "Ex_Machina: Instinto Artificial",
+      "relevant_id": 264660,
+      "target_vote_count": 14017.0,
+      "target_catalog_pct": 99.2,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-08",
+      "split": "dev",
+      "title": "Um Homem com uma Câmera",
+      "relevant_id": 26317,
+      "target_vote_count": 784.0,
+      "target_catalog_pct": 74.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-09",
+      "split": "dev",
+      "title": "O Show de Truman: O Show da Vida",
+      "relevant_id": 37165,
+      "target_vote_count": 19796.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-10",
+      "split": "dev",
+      "title": "Brilho Eterno de uma Mente sem Lembranças",
+      "relevant_id": 38,
+      "target_vote_count": 16030.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-core-11",
+      "split": "dev",
+      "title": "Feitiço do Tempo",
+      "relevant_id": 137,
+      "target_vote_count": 8679.0,
+      "target_catalog_pct": 98.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-12",
+      "split": "test",
+      "title": "Matrix",
+      "relevant_id": 603,
+      "target_vote_count": 27380.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v1-ext-13",
+      "split": "dev",
+      "title": "Clube da Luta",
+      "relevant_id": 550,
+      "target_vote_count": 31449.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-14",
+      "split": "test",
+      "title": "Cidade de Deus",
+      "relevant_id": 598,
+      "target_vote_count": 8006.0,
+      "target_catalog_pct": 97.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-15",
+      "split": "dev",
+      "title": "De Volta para o Futuro",
+      "relevant_id": 105,
+      "target_vote_count": 21390.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-16",
+      "split": "dev",
+      "title": "O Senhor dos Anéis: A Sociedade do Anel",
+      "relevant_id": 120,
+      "target_vote_count": 27011.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-17",
+      "split": "dev",
+      "title": "Toy Story: Um Mundo de Aventuras",
+      "relevant_id": 862,
+      "target_vote_count": 0.0,
+      "target_catalog_pct": 0.0,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 5,
+        "0.35": 29,
+        "0.5": 165,
+        "0.7": 1341,
+        "0.9": 5184,
+        "1.2": 14506
+      }
+    },
+    {
+      "qid": "v1-ext-18",
+      "split": "test",
+      "title": "Forrest Gump: O Contador de Histórias",
+      "relevant_id": 13,
+      "target_vote_count": 29246.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-19",
+      "split": "dev",
+      "title": "O Poderoso Chefão",
+      "relevant_id": 238,
+      "target_vote_count": 22462.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-20",
+      "split": "test",
+      "title": "Titanic",
+      "relevant_id": 597,
+      "target_vote_count": 26786.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-21",
+      "split": "dev",
+      "title": "Jurassic Park: O Parque dos Dinossauros",
+      "relevant_id": 329,
+      "target_vote_count": 17526.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v1-ext-22",
+      "split": "dev",
+      "title": "O Exterminador do Futuro",
+      "relevant_id": 218,
+      "target_vote_count": 14281.0,
+      "target_catalog_pct": 99.2,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-23",
+      "split": "test",
+      "title": "Gladiador",
+      "relevant_id": 98,
+      "target_vote_count": 20510.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-24",
+      "split": "dev",
+      "title": "Interestelar",
+      "relevant_id": 157336,
+      "target_vote_count": 38882.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 7,
+        "0.15": 3,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-25",
+      "split": "dev",
+      "title": "Coringa",
+      "relevant_id": 475557,
+      "target_vote_count": 27298.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-26",
+      "split": "test",
+      "title": "Bastardos Inglórios",
+      "relevant_id": 16869,
+      "target_vote_count": 23742.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-27",
+      "split": "dev",
+      "title": "Django Livre",
+      "relevant_id": 68718,
+      "target_vote_count": 27571.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-28",
+      "split": "test",
+      "title": "O Resgate do Soldado Ryan",
+      "relevant_id": 857,
+      "target_vote_count": 16881.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-29",
+      "split": "test",
+      "title": "Procurando Nemo",
+      "relevant_id": 12,
+      "target_vote_count": 20267.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-30",
+      "split": "dev",
+      "title": "WALL-E",
+      "relevant_id": 10681,
+      "target_vote_count": 19924.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-31",
+      "split": "dev",
+      "title": "Os Infiltrados",
+      "relevant_id": 1422,
+      "target_vote_count": 15889.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 3,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-32",
+      "split": "test",
+      "title": "O Silêncio dos Inocentes",
+      "relevant_id": 274,
+      "target_vote_count": 17574.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 3,
+        "0.35": 3,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-33",
+      "split": "dev",
+      "title": "Psicose",
+      "relevant_id": 539,
+      "target_vote_count": 10805.0,
+      "target_catalog_pct": 98.6,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-34",
+      "split": "dev",
+      "title": "Laranja Mecânica",
+      "relevant_id": 185,
+      "target_vote_count": 13604.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 10,
+        "0.15": 8,
+        "0.35": 4,
+        "0.5": 3,
+        "0.7": 3,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v1-ext-35",
+      "split": "test",
+      "title": "O Fabuloso Destino de Amélie Poulain",
+      "relevant_id": 194,
+      "target_vote_count": 12211.0,
+      "target_catalog_pct": 98.9,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-36",
+      "split": "test",
+      "title": "Cidadão Kane",
+      "relevant_id": 15,
+      "target_vote_count": 5930.0,
+      "target_catalog_pct": 96.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-37",
+      "split": "dev",
+      "title": "Blade Runner: O Caçador de Andróides",
+      "relevant_id": 78,
+      "target_vote_count": 14693.0,
+      "target_catalog_pct": 99.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-38",
+      "split": "dev",
+      "title": "O Rei Leão",
+      "relevant_id": 8587,
+      "target_vote_count": 19376.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-39",
+      "split": "dev",
+      "title": "Taxi Driver: Motorista de Táxi",
+      "relevant_id": 103,
+      "target_vote_count": 13182.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-40",
+      "split": "test",
+      "title": "Os Bons Companheiros",
+      "relevant_id": 769,
+      "target_vote_count": 14025.0,
+      "target_catalog_pct": 99.2,
+      "ranks": {
+        "0.0": 34,
+        "0.15": 21,
+        "0.35": 7,
+        "0.5": 6,
+        "0.7": 5,
+        "0.9": 4,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v1-ext-41",
+      "split": "dev",
+      "title": "Corra!",
+      "relevant_id": 419430,
+      "target_vote_count": 18545.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-42",
+      "split": "dev",
+      "title": "Ilha do Medo",
+      "relevant_id": 11324,
+      "target_vote_count": 25418.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-43",
+      "split": "test",
+      "title": "A Lista de Schindler",
+      "relevant_id": 424,
+      "target_vote_count": 17112.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-44",
+      "split": "dev",
+      "title": "Mad Max: Estrada da Fúria",
+      "relevant_id": 76341,
+      "target_vote_count": 23760.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 320,
+        "0.15": 111,
+        "0.35": 41,
+        "0.5": 20,
+        "0.7": 13,
+        "0.9": 8,
+        "1.2": 6
+      }
+    },
+    {
+      "qid": "v1-ext-45",
+      "split": "test",
+      "title": "Up: Altas Aventuras",
+      "relevant_id": 14160,
+      "target_vote_count": 21333.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-46",
+      "split": "dev",
+      "title": "2001: Uma Odisséia no Espaço",
+      "relevant_id": 62,
+      "target_vote_count": 12341.0,
+      "target_catalog_pct": 98.9,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 3,
+        "0.35": 3,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v1-ext-47",
+      "split": "dev",
+      "title": "Cisne Negro",
+      "relevant_id": 44214,
+      "target_vote_count": 15323.0,
+      "target_catalog_pct": 99.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-48",
+      "split": "dev",
+      "title": "O Sexto Sentido",
+      "relevant_id": 745,
+      "target_vote_count": 12575.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-49",
+      "split": "test",
+      "title": "Rocky: Um Lutador",
+      "relevant_id": 1366,
+      "target_vote_count": 8427.0,
+      "target_catalog_pct": 97.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-50",
+      "split": "dev",
+      "title": "Um Sonho de Liberdade",
+      "relevant_id": 278,
+      "target_vote_count": 29738.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 6,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v1-ext-51",
+      "split": "test",
+      "title": "Indiana Jones e os Caçadores da Arca Perdida",
+      "relevant_id": 85,
+      "target_vote_count": 13386.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-000",
+      "split": "dev",
+      "title": "Pulp Fiction: Tempo de Violência",
+      "relevant_id": 680,
+      "target_vote_count": 29687.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 52,
+        "0.15": 24,
+        "0.35": 11,
+        "0.5": 5,
+        "0.7": 2,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-001",
+      "split": "dev",
+      "title": "O Grande Lebowski",
+      "relevant_id": 115,
+      "target_vote_count": 11944.0,
+      "target_catalog_pct": 98.8,
+      "ranks": {
+        "0.0": 33,
+        "0.15": 16,
+        "0.35": 11,
+        "0.5": 6,
+        "0.7": 5,
+        "0.9": 5,
+        "1.2": 5
+      }
+    },
+    {
+      "qid": "v2-002",
+      "split": "dev",
+      "title": "Cães de Aluguel",
+      "relevant_id": 500,
+      "target_vote_count": 15154.0,
+      "target_catalog_pct": 99.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-003",
+      "split": "test",
+      "title": "Kill Bill: Volume 1",
+      "relevant_id": 24,
+      "target_vote_count": 18576.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-004",
+      "split": "test",
+      "title": "À Espera de um Milagre",
+      "relevant_id": 497,
+      "target_vote_count": 18858.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-005",
+      "split": "test",
+      "title": "Um Estranho no Ninho",
+      "relevant_id": 510,
+      "target_vote_count": 11209.0,
+      "target_catalog_pct": 98.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-006",
+      "split": "dev",
+      "title": "Chinatown",
+      "relevant_id": 829,
+      "target_vote_count": 4166.0,
+      "target_catalog_pct": 94.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-007",
+      "split": "dev",
+      "title": "Apocalypse Now",
+      "relevant_id": 28,
+      "target_vote_count": 8878.0,
+      "target_catalog_pct": 98.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-008",
+      "split": "test",
+      "title": "La La Land: Cantando Estações",
+      "relevant_id": 313369,
+      "target_vote_count": 17846.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-009",
+      "split": "dev",
+      "title": "Um Corpo Que Cai",
+      "relevant_id": 426,
+      "target_vote_count": 6214.0,
+      "target_catalog_pct": 96.5,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-010",
+      "split": "test",
+      "title": "Cantando na Chuva",
+      "relevant_id": 872,
+      "target_vote_count": 3416.0,
+      "target_catalog_pct": 92.8,
+      "ranks": {
+        "0.0": 6,
+        "0.15": 6,
+        "0.35": 5,
+        "0.5": 5,
+        "0.7": 5,
+        "0.9": 5,
+        "1.2": 7
+      }
+    },
+    {
+      "qid": "v2-011",
+      "split": "dev",
+      "title": "E.T.: O Extraterrestre",
+      "relevant_id": 601,
+      "target_vote_count": 11804.0,
+      "target_catalog_pct": 98.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-012",
+      "split": "dev",
+      "title": "Os Caça-Fantasmas",
+      "relevant_id": 620,
+      "target_vote_count": 9573.0,
+      "target_catalog_pct": 98.2,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-013",
+      "split": "dev",
+      "title": "Alien: O Oitavo Passageiro",
+      "relevant_id": 348,
+      "target_vote_count": 16015.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-014",
+      "split": "dev",
+      "title": "O Bebê de Rosemary",
+      "relevant_id": 805,
+      "target_vote_count": 4275.0,
+      "target_catalog_pct": 94.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-015",
+      "split": "dev",
+      "title": "Coração Valente",
+      "relevant_id": 197,
+      "target_vote_count": 10873.0,
+      "target_catalog_pct": 98.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-016",
+      "split": "dev",
+      "title": "O Pianista",
+      "relevant_id": 423,
+      "target_vote_count": 9916.0,
+      "target_catalog_pct": 98.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-017",
+      "split": "dev",
+      "title": "A Origem",
+      "relevant_id": 27205,
+      "target_vote_count": 38689.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-018",
+      "split": "test",
+      "title": "Batman: O Cavaleiro das Trevas",
+      "relevant_id": 155,
+      "target_vote_count": 35186.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 225,
+        "0.15": 58,
+        "0.35": 28,
+        "0.5": 13,
+        "0.7": 8,
+        "0.9": 5,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v2-019",
+      "split": "test",
+      "title": "Os Suspeitos",
+      "relevant_id": 629,
+      "target_vote_count": 11156.0,
+      "target_catalog_pct": 98.7,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-020",
+      "split": "dev",
+      "title": "Réquiem para um Sonho",
+      "relevant_id": 641,
+      "target_vote_count": 10741.0,
+      "target_catalog_pct": 98.6,
+      "ranks": {
+        "0.0": 17,
+        "0.15": 7,
+        "0.35": 3,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-021",
+      "split": "test",
+      "title": "Trainspotting: Sem Limites",
+      "relevant_id": 627,
+      "target_vote_count": 10218.0,
+      "target_catalog_pct": 98.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-022",
+      "split": "test",
+      "title": "Beleza Americana",
+      "relevant_id": 14,
+      "target_vote_count": 12802.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 34,
+        "0.15": 11,
+        "0.35": 6,
+        "0.5": 3,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v2-023",
+      "split": "dev",
+      "title": "Meia Noite em Paris",
+      "relevant_id": 59436,
+      "target_vote_count": 7640.0,
+      "target_catalog_pct": 97.5,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-024",
+      "split": "dev",
+      "title": "Nasce uma Estrela",
+      "relevant_id": 332562,
+      "target_vote_count": 12099.0,
+      "target_catalog_pct": 98.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-025",
+      "split": "test",
+      "title": "O Lobo de Wall Street",
+      "relevant_id": 106646,
+      "target_vote_count": 25500.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-026",
+      "split": "test",
+      "title": "A Rede Social",
+      "relevant_id": 37799,
+      "target_vote_count": 12906.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-027",
+      "split": "dev",
+      "title": "Menina de Ouro",
+      "relevant_id": 70,
+      "target_vote_count": 10170.0,
+      "target_catalog_pct": 98.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-028",
+      "split": "test",
+      "title": "Touro Indomável",
+      "relevant_id": 1578,
+      "target_vote_count": 4654.0,
+      "target_catalog_pct": 95.1,
+      "ranks": {
+        "0.0": 11,
+        "0.15": 9,
+        "0.35": 9,
+        "0.5": 8,
+        "0.7": 6,
+        "0.9": 5,
+        "1.2": 5
+      }
+    },
+    {
+      "qid": "v2-029",
+      "split": "dev",
+      "title": "Scarface",
+      "relevant_id": 111,
+      "target_vote_count": 12735.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-030",
+      "split": "dev",
+      "title": "Era Uma Vez na América",
+      "relevant_id": 311,
+      "target_vote_count": 5894.0,
+      "target_catalog_pct": 96.2,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-031",
+      "split": "dev",
+      "title": "Platoon",
+      "relevant_id": 792,
+      "target_vote_count": 4963.0,
+      "target_catalog_pct": 95.5,
+      "ranks": {
+        "0.0": 13,
+        "0.15": 8,
+        "0.35": 4,
+        "0.5": 4,
+        "0.7": 3,
+        "0.9": 3,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v2-032",
+      "split": "dev",
+      "title": "Nascido Para Matar",
+      "relevant_id": 600,
+      "target_vote_count": 11225.0,
+      "target_catalog_pct": 98.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-033",
+      "split": "dev",
+      "title": "Dunkirk",
+      "relevant_id": 374720,
+      "target_vote_count": 17315.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 5,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-034",
+      "split": "dev",
+      "title": "1917",
+      "relevant_id": 530915,
+      "target_vote_count": 13285.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-035",
+      "split": "test",
+      "title": "A Chegada",
+      "relevant_id": 329865,
+      "target_vote_count": 18978.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-036",
+      "split": "test",
+      "title": "Gravidade",
+      "relevant_id": 49047,
+      "target_vote_count": 16090.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-037",
+      "split": "dev",
+      "title": "Perdido em Marte",
+      "relevant_id": 286217,
+      "target_vote_count": 20832.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-038",
+      "split": "dev",
+      "title": "Contato",
+      "relevant_id": 686,
+      "target_vote_count": 4856.0,
+      "target_catalog_pct": 95.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v2-039",
+      "split": "test",
+      "title": "Distrito 9",
+      "relevant_id": 17654,
+      "target_vote_count": 10131.0,
+      "target_catalog_pct": 98.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-040",
+      "split": "dev",
+      "title": "A.I.: Inteligência Artificial",
+      "relevant_id": 644,
+      "target_vote_count": 6527.0,
+      "target_catalog_pct": 96.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-041",
+      "split": "test",
+      "title": "Minority Report: A Nova Lei",
+      "relevant_id": 180,
+      "target_vote_count": 9396.0,
+      "target_catalog_pct": 98.2,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-042",
+      "split": "dev",
+      "title": "O Vingador do Futuro",
+      "relevant_id": 861,
+      "target_vote_count": 6292.0,
+      "target_catalog_pct": 96.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-043",
+      "split": "dev",
+      "title": "RoboCop - O Policial do Futuro",
+      "relevant_id": 5548,
+      "target_vote_count": 5583.0,
+      "target_catalog_pct": 96.0,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-044",
+      "split": "dev",
+      "title": "Duro de Matar",
+      "relevant_id": 562,
+      "target_vote_count": 12031.0,
+      "target_catalog_pct": 98.9,
+      "ranks": {
+        "0.0": 7,
+        "0.15": 4,
+        "0.35": 3,
+        "0.5": 3,
+        "0.7": 3,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v2-045",
+      "split": "dev",
+      "title": "Velocidade Máxima",
+      "relevant_id": 1637,
+      "target_vote_count": 6687.0,
+      "target_catalog_pct": 96.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-046",
+      "split": "dev",
+      "title": "O Massacre da Serra Elétrica",
+      "relevant_id": 30497,
+      "target_vote_count": 3701.0,
+      "target_catalog_pct": 93.4,
+      "ranks": {
+        "0.0": 5,
+        "0.15": 5,
+        "0.35": 4,
+        "0.5": 4,
+        "0.7": 4,
+        "0.9": 4,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v2-047",
+      "split": "dev",
+      "title": "Halloween - A Noite do Terror",
+      "relevant_id": 948,
+      "target_vote_count": 6053.0,
+      "target_catalog_pct": 96.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-048",
+      "split": "test",
+      "title": "A Hora do Pesadelo",
+      "relevant_id": 377,
+      "target_vote_count": 5594.0,
+      "target_catalog_pct": 96.0,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v2-049",
+      "split": "dev",
+      "title": "It: A Coisa",
+      "relevant_id": 346364,
+      "target_vote_count": 20078.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-050",
+      "split": "test",
+      "title": "O Exorcista",
+      "relevant_id": 9552,
+      "target_vote_count": 8473.0,
+      "target_catalog_pct": 97.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-051",
+      "split": "dev",
+      "title": "Hereditário",
+      "relevant_id": 493922,
+      "target_vote_count": 8354.0,
+      "target_catalog_pct": 97.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-052",
+      "split": "dev",
+      "title": "Nós",
+      "relevant_id": 458723,
+      "target_vote_count": 7910.0,
+      "target_catalog_pct": 97.6,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v2-053",
+      "split": "test",
+      "title": "O Enigma de Outro Mundo",
+      "relevant_id": 1091,
+      "target_vote_count": 7713.0,
+      "target_catalog_pct": 97.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-054",
+      "split": "dev",
+      "title": "O Predador",
+      "relevant_id": 106,
+      "target_vote_count": 8854.0,
+      "target_catalog_pct": 98.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-055",
+      "split": "dev",
+      "title": "Tropa de Elite",
+      "relevant_id": 7347,
+      "target_vote_count": 2627.0,
+      "target_catalog_pct": 90.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-056",
+      "split": "dev",
+      "title": "Central do Brasil",
+      "relevant_id": 666,
+      "target_vote_count": 1020.0,
+      "target_catalog_pct": 78.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 6
+      }
+    },
+    {
+      "qid": "v2-057",
+      "split": "dev",
+      "title": "O Auto da Compadecida",
+      "relevant_id": 40096,
+      "target_vote_count": 1203.0,
+      "target_catalog_pct": 81.4,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 4,
+        "0.9": 7,
+        "1.2": 22
+      }
+    },
+    {
+      "qid": "v2-058",
+      "split": "dev",
+      "title": "Bacurau",
+      "relevant_id": 446159,
+      "target_vote_count": 1120.0,
+      "target_catalog_pct": 80.3,
+      "ranks": {
+        "0.0": 5,
+        "0.15": 5,
+        "0.35": 4,
+        "0.5": 5,
+        "0.7": 8,
+        "0.9": 16,
+        "1.2": 41
+      }
+    },
+    {
+      "qid": "v2-059",
+      "split": "dev",
+      "title": "Que Horas Ela Volta?",
+      "relevant_id": 310569,
+      "target_vote_count": 768.0,
+      "target_catalog_pct": 74.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 3,
+        "0.7": 4,
+        "0.9": 11,
+        "1.2": 54
+      }
+    },
+    {
+      "qid": "v2-060",
+      "split": "test",
+      "title": "Carandiru",
+      "relevant_id": 8440,
+      "target_vote_count": 591.0,
+      "target_catalog_pct": 68.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 2,
+        "1.2": 5
+      }
+    },
+    {
+      "qid": "v2-061",
+      "split": "dev",
+      "title": "Blade Runner 2049",
+      "relevant_id": 335984,
+      "target_vote_count": 14785.0,
+      "target_catalog_pct": 99.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-062",
+      "split": "dev",
+      "title": "Ela",
+      "relevant_id": 152601,
+      "target_vote_count": 15054.0,
+      "target_catalog_pct": 99.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-063",
+      "split": "dev",
+      "title": "Donnie Darko",
+      "relevant_id": 141,
+      "target_vote_count": 13185.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 28,
+        "0.15": 11,
+        "0.35": 6,
+        "0.5": 5,
+        "0.7": 5,
+        "0.9": 5,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v2-064",
+      "split": "test",
+      "title": "Corpo Fechado",
+      "relevant_id": 9741,
+      "target_vote_count": 9767.0,
+      "target_catalog_pct": 98.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-065",
+      "split": "dev",
+      "title": "Birdman ou (A Inesperada Virtude da Ignorância)",
+      "relevant_id": 194662,
+      "target_vote_count": 13400.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-066",
+      "split": "test",
+      "title": "O Grande Hotel Budapeste",
+      "relevant_id": 120467,
+      "target_vote_count": 15760.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-067",
+      "split": "dev",
+      "title": "Cassino",
+      "relevant_id": 524,
+      "target_vote_count": 6376.0,
+      "target_catalog_pct": 96.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-068",
+      "split": "dev",
+      "title": "Thelma & Louise",
+      "relevant_id": 1541,
+      "target_vote_count": 3771.0,
+      "target_catalog_pct": 93.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-069",
+      "split": "dev",
+      "title": "Três Homens em Conflito",
+      "relevant_id": 429,
+      "target_vote_count": 9417.0,
+      "target_catalog_pct": 98.2,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-070",
+      "split": "test",
+      "title": "Onde os Fracos Não Têm Vez",
+      "relevant_id": 6977,
+      "target_vote_count": 12991.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 77,
+        "0.15": 34,
+        "0.35": 17,
+        "0.5": 12,
+        "0.7": 9,
+        "0.9": 8,
+        "1.2": 7
+      }
+    },
+    {
+      "qid": "v2-071",
+      "split": "dev",
+      "title": "Fargo: Uma Comédia de Erros",
+      "relevant_id": 275,
+      "target_vote_count": 8877.0,
+      "target_catalog_pct": 98.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-072",
+      "split": "dev",
+      "title": "Prenda-Me se For Capaz",
+      "relevant_id": 640,
+      "target_vote_count": 16763.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-073",
+      "split": "test",
+      "title": "Ender's Game: O Jogo do Exterminador",
+      "relevant_id": 80274,
+      "target_vote_count": 6129.0,
+      "target_catalog_pct": 96.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-074",
+      "split": "dev",
+      "title": "O Homem Que Mudou o Jogo",
+      "relevant_id": 60308,
+      "target_vote_count": 5601.0,
+      "target_catalog_pct": 96.0,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-075",
+      "split": "test",
+      "title": "O Sol é Para Todos",
+      "relevant_id": 595,
+      "target_vote_count": 2798.0,
+      "target_catalog_pct": 91.2,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 4,
+        "0.35": 4,
+        "0.5": 4,
+        "0.7": 6,
+        "0.9": 7,
+        "1.2": 8
+      }
+    },
+    {
+      "qid": "v2-076",
+      "split": "dev",
+      "title": "12 Homens e uma Sentença",
+      "relevant_id": 389,
+      "target_vote_count": 9743.0,
+      "target_catalog_pct": 98.3,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-077",
+      "split": "dev",
+      "title": "Papillon",
+      "relevant_id": 5924,
+      "target_vote_count": 2065.0,
+      "target_catalog_pct": 88.3,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 4,
+        "1.2": 8
+      }
+    },
+    {
+      "qid": "v2-078",
+      "split": "dev",
+      "title": "Lawrence da Arábia",
+      "relevant_id": 947,
+      "target_vote_count": 3331.0,
+      "target_catalog_pct": 92.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-079",
+      "split": "dev",
+      "title": "A Noviça Rebelde",
+      "relevant_id": 15121,
+      "target_vote_count": 3550.0,
+      "target_catalog_pct": 93.1,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-080",
+      "split": "dev",
+      "title": "Encurralado",
+      "relevant_id": 839,
+      "target_vote_count": 2014.0,
+      "target_catalog_pct": 88.1,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 3,
+        "0.9": 5,
+        "1.2": 10
+      }
+    },
+    {
+      "qid": "v2-081",
+      "split": "test",
+      "title": "007 Contra Goldfinger",
+      "relevant_id": 658,
+      "target_vote_count": 3865.0,
+      "target_catalog_pct": 93.7,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 3,
+        "0.7": 3,
+        "0.9": 3,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v2-082",
+      "split": "dev",
+      "title": "A Fantástica Fábrica de Chocolate",
+      "relevant_id": 252,
+      "target_vote_count": 3867.0,
+      "target_catalog_pct": 93.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v2-083",
+      "split": "dev",
+      "title": "Harry Potter e a Pedra Filosofal",
+      "relevant_id": 671,
+      "target_vote_count": 29150.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-084",
+      "split": "test",
+      "title": "A Bela e a Fera",
+      "relevant_id": 10020,
+      "target_vote_count": 10507.0,
+      "target_catalog_pct": 98.5,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v2-085",
+      "split": "test",
+      "title": "Alice no País das Maravilhas",
+      "relevant_id": 12092,
+      "target_vote_count": 6176.0,
+      "target_catalog_pct": 96.5,
+      "ranks": {
+        "0.0": 6,
+        "0.15": 4,
+        "0.35": 3,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 3,
+        "1.2": 5
+      }
+    },
+    {
+      "qid": "v2-086",
+      "split": "dev",
+      "title": "Ratatouille",
+      "relevant_id": 2062,
+      "target_vote_count": 18184.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-087",
+      "split": "test",
+      "title": "Os Incríveis",
+      "relevant_id": 9806,
+      "target_vote_count": 18618.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v2-088",
+      "split": "dev",
+      "title": "Assassinos por Natureza",
+      "relevant_id": 241,
+      "target_vote_count": 3698.0,
+      "target_catalog_pct": 93.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v2-089",
+      "split": "test",
+      "title": "Boyhood: Da Infância à Juventude",
+      "relevant_id": 85350,
+      "target_vote_count": 5426.0,
+      "target_catalog_pct": 95.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-000",
+      "split": "hard",
+      "title": "O Senhor dos Anéis: A Sociedade do Anel",
+      "relevant_id": 120,
+      "target_vote_count": 27011.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 229,
+        "0.15": 67,
+        "0.35": 18,
+        "0.5": 8,
+        "0.7": 5,
+        "0.9": 5,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v3-hard-001",
+      "split": "hard",
+      "title": "Matrix",
+      "relevant_id": 603,
+      "target_vote_count": 27380.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 8187,
+        "0.15": 3229,
+        "0.35": 891,
+        "0.5": 477,
+        "0.7": 268,
+        "0.9": 173,
+        "1.2": 97
+      }
+    },
+    {
+      "qid": "v3-hard-002",
+      "split": "hard",
+      "title": "Guerra nas Estrelas",
+      "relevant_id": 11,
+      "target_vote_count": 21936.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 334,
+        "0.15": 153,
+        "0.35": 59,
+        "0.5": 38,
+        "0.7": 24,
+        "0.9": 18,
+        "1.2": 15
+      }
+    },
+    {
+      "qid": "v3-hard-003",
+      "split": "hard",
+      "title": "Clube da Luta",
+      "relevant_id": 550,
+      "target_vote_count": 31449.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 7,
+        "0.15": 3,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-004",
+      "split": "hard",
+      "title": "O Sexto Sentido",
+      "relevant_id": 745,
+      "target_vote_count": 12575.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 42,
+        "0.15": 13,
+        "0.35": 9,
+        "0.5": 6,
+        "0.7": 4,
+        "0.9": 4,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v3-hard-005",
+      "split": "hard",
+      "title": "De Volta para o Futuro",
+      "relevant_id": 105,
+      "target_vote_count": 21390.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 202,
+        "0.15": 68,
+        "0.35": 23,
+        "0.5": 12,
+        "0.7": 9,
+        "0.9": 8,
+        "1.2": 6
+      }
+    },
+    {
+      "qid": "v3-hard-006",
+      "split": "hard",
+      "title": "O Poderoso Chefão",
+      "relevant_id": 238,
+      "target_vote_count": 22462.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 369,
+        "0.15": 131,
+        "0.35": 45,
+        "0.5": 22,
+        "0.7": 16,
+        "0.9": 9,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v3-hard-007",
+      "split": "hard",
+      "title": "Jurassic Park: O Parque dos Dinossauros",
+      "relevant_id": 329,
+      "target_vote_count": 17526.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 8,
+        "0.15": 4,
+        "0.35": 3,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-hard-008",
+      "split": "hard",
+      "title": "Titanic",
+      "relevant_id": 597,
+      "target_vote_count": 26786.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-009",
+      "split": "hard",
+      "title": "Forrest Gump: O Contador de Histórias",
+      "relevant_id": 13,
+      "target_vote_count": 29246.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1649,
+        "0.15": 446,
+        "0.35": 116,
+        "0.5": 57,
+        "0.7": 33,
+        "0.9": 19,
+        "1.2": 13
+      }
+    },
+    {
+      "qid": "v3-hard-010",
+      "split": "hard",
+      "title": "O Rei Leão",
+      "relevant_id": 8587,
+      "target_vote_count": 19376.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-hard-011",
+      "split": "hard",
+      "title": "O Iluminado",
+      "relevant_id": 694,
+      "target_vote_count": 18615.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-012",
+      "split": "hard",
+      "title": "Toy Story: Um Mundo de Aventuras",
+      "relevant_id": 862,
+      "target_vote_count": 0.0,
+      "target_catalog_pct": 0.0,
+      "ranks": {
+        "0.0": 7,
+        "0.15": 39,
+        "0.35": 476,
+        "0.5": 2501,
+        "0.7": 9943,
+        "0.9": 18275,
+        "1.2": 22020
+      }
+    },
+    {
+      "qid": "v3-hard-013",
+      "split": "hard",
+      "title": "Procurando Nemo",
+      "relevant_id": 12,
+      "target_vote_count": 20267.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-014",
+      "split": "hard",
+      "title": "WALL-E",
+      "relevant_id": 10681,
+      "target_vote_count": 19924.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-015",
+      "split": "hard",
+      "title": "Interestelar",
+      "relevant_id": 157336,
+      "target_vote_count": 38882.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 10,
+        "0.15": 4,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-016",
+      "split": "hard",
+      "title": "Coringa",
+      "relevant_id": 475557,
+      "target_vote_count": 27298.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1773,
+        "0.15": 564,
+        "0.35": 173,
+        "0.5": 107,
+        "0.7": 63,
+        "0.9": 30,
+        "1.2": 20
+      }
+    },
+    {
+      "qid": "v3-hard-017",
+      "split": "hard",
+      "title": "O Silêncio dos Inocentes",
+      "relevant_id": 274,
+      "target_vote_count": 17574.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 546,
+        "0.15": 241,
+        "0.35": 117,
+        "0.5": 83,
+        "0.7": 52,
+        "0.9": 38,
+        "1.2": 26
+      }
+    },
+    {
+      "qid": "v3-hard-018",
+      "split": "hard",
+      "title": "Parasita",
+      "relevant_id": 496243,
+      "target_vote_count": 20141.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 12,
+        "0.15": 5,
+        "0.35": 3,
+        "0.5": 3,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-019",
+      "split": "hard",
+      "title": "Whiplash: Em Busca da Perfeição",
+      "relevant_id": 244786,
+      "target_vote_count": 16307.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 10,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-020",
+      "split": "hard",
+      "title": "Blade Runner: O Caçador de Andróides",
+      "relevant_id": 78,
+      "target_vote_count": 14693.0,
+      "target_catalog_pct": 99.3,
+      "ranks": {
+        "0.0": 738,
+        "0.15": 233,
+        "0.35": 93,
+        "0.5": 62,
+        "0.7": 47,
+        "0.9": 33,
+        "1.2": 27
+      }
+    },
+    {
+      "qid": "v3-hard-021",
+      "split": "hard",
+      "title": "Alien: O Oitavo Passageiro",
+      "relevant_id": 348,
+      "target_vote_count": 16015.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-022",
+      "split": "hard",
+      "title": "O Grande Truque",
+      "relevant_id": 1124,
+      "target_vote_count": 17218.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 39,
+        "0.15": 22,
+        "0.35": 13,
+        "0.5": 6,
+        "0.7": 6,
+        "0.9": 4,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v3-hard-023",
+      "split": "hard",
+      "title": "A Origem",
+      "relevant_id": 27205,
+      "target_vote_count": 38689.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-024",
+      "split": "hard",
+      "title": "O Show de Truman: O Show da Vida",
+      "relevant_id": 37165,
+      "target_vote_count": 19796.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 194,
+        "0.15": 70,
+        "0.35": 27,
+        "0.5": 20,
+        "0.7": 11,
+        "0.9": 10,
+        "1.2": 10
+      }
+    },
+    {
+      "qid": "v3-hard-025",
+      "split": "hard",
+      "title": "Feitiço do Tempo",
+      "relevant_id": 137,
+      "target_vote_count": 8679.0,
+      "target_catalog_pct": 98.0,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-026",
+      "split": "hard",
+      "title": "Corra!",
+      "relevant_id": 419430,
+      "target_vote_count": 18545.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 6,
+        "0.15": 3,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-027",
+      "split": "hard",
+      "title": "Gladiador",
+      "relevant_id": 98,
+      "target_vote_count": 20510.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-hard-028",
+      "split": "hard",
+      "title": "Cidade de Deus",
+      "relevant_id": 598,
+      "target_vote_count": 8006.0,
+      "target_catalog_pct": 97.7,
+      "ranks": {
+        "0.0": 61,
+        "0.15": 24,
+        "0.35": 16,
+        "0.5": 16,
+        "0.7": 11,
+        "0.9": 9,
+        "1.2": 9
+      }
+    },
+    {
+      "qid": "v3-hard-029",
+      "split": "hard",
+      "title": "Amnésia",
+      "relevant_id": 77,
+      "target_vote_count": 15903.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-000",
+      "split": "entity",
+      "title": "Velozes e Furiosos",
+      "relevant_id": 9799,
+      "target_vote_count": 10639.0,
+      "target_catalog_pct": 98.5,
+      "ranks": {
+        "0.0": 7,
+        "0.15": 7,
+        "0.35": 6,
+        "0.5": 6,
+        "0.7": 6,
+        "0.9": 6,
+        "1.2": 6
+      }
+    },
+    {
+      "qid": "v3-entity-001",
+      "split": "entity",
+      "title": "+ Velozes + Furiosos",
+      "relevant_id": 584,
+      "target_vote_count": 7992.0,
+      "target_catalog_pct": 97.7,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 5,
+        "1.2": 5
+      }
+    },
+    {
+      "qid": "v3-entity-002",
+      "split": "entity",
+      "title": "Velozes e Furiosos 4",
+      "relevant_id": 13804,
+      "target_vote_count": 7677.0,
+      "target_catalog_pct": 97.5,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 4,
+        "0.35": 3,
+        "0.5": 3,
+        "0.7": 3,
+        "0.9": 3,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v3-entity-003",
+      "split": "entity",
+      "title": "Velozes & Furiosos 5: Operação Rio",
+      "relevant_id": 51497,
+      "target_vote_count": 8701.0,
+      "target_catalog_pct": 98.0,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-004",
+      "split": "entity",
+      "title": "Velozes & Furiosos 7",
+      "relevant_id": 168259,
+      "target_vote_count": 11135.0,
+      "target_catalog_pct": 98.7,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 3,
+        "0.35": 3,
+        "0.5": 3,
+        "0.7": 3,
+        "0.9": 3,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v3-entity-005",
+      "split": "entity",
+      "title": "John Wick - De Volta ao Jogo",
+      "relevant_id": 245891,
+      "target_vote_count": 20460.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-006",
+      "split": "entity",
+      "title": "O Poderoso Chefão",
+      "relevant_id": 238,
+      "target_vote_count": 22462.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-007",
+      "split": "entity",
+      "title": "Onde os Fracos Não Têm Vez",
+      "relevant_id": 6977,
+      "target_vote_count": 12991.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-008",
+      "split": "entity",
+      "title": "Blade Runner: O Caçador de Andróides",
+      "relevant_id": 78,
+      "target_vote_count": 14693.0,
+      "target_catalog_pct": 99.3,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-entity-009",
+      "split": "entity",
+      "title": "Taxi Driver: Motorista de Táxi",
+      "relevant_id": 103,
+      "target_vote_count": 13182.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-010",
+      "split": "entity",
+      "title": "Clube da Luta",
+      "relevant_id": 550,
+      "target_vote_count": 31449.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-011",
+      "split": "entity",
+      "title": "Psicopata Americano",
+      "relevant_id": 1359,
+      "target_vote_count": 11989.0,
+      "target_catalog_pct": 98.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-012",
+      "split": "entity",
+      "title": "O Silêncio dos Inocentes",
+      "relevant_id": 274,
+      "target_vote_count": 17574.0,
+      "target_catalog_pct": 99.5,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-013",
+      "split": "entity",
+      "title": "Um Sonho de Liberdade",
+      "relevant_id": 278,
+      "target_vote_count": 29738.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-014",
+      "split": "entity",
+      "title": "Gladiador",
+      "relevant_id": 98,
+      "target_vote_count": 20510.0,
+      "target_catalog_pct": 99.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-015",
+      "split": "entity",
+      "title": "De Volta para o Futuro",
+      "relevant_id": 105,
+      "target_vote_count": 21390.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-entity-016",
+      "split": "entity",
+      "title": "Titanic",
+      "relevant_id": 597,
+      "target_vote_count": 26786.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-017",
+      "split": "entity",
+      "title": "Rambo: Programado Para Matar",
+      "relevant_id": 1368,
+      "target_vote_count": 6742.0,
+      "target_catalog_pct": 96.9,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 3,
+        "0.35": 3,
+        "0.5": 3,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-entity-018",
+      "split": "entity",
+      "title": "Alien: O Oitavo Passageiro",
+      "relevant_id": 348,
+      "target_vote_count": 16015.0,
+      "target_catalog_pct": 99.4,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 4,
+        "0.35": 4,
+        "0.5": 4,
+        "0.7": 4,
+        "0.9": 4,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v3-entity-019",
+      "split": "entity",
+      "title": "O Exterminador do Futuro",
+      "relevant_id": 218,
+      "target_vote_count": 14281.0,
+      "target_catalog_pct": 99.2,
+      "ranks": {
+        "0.0": 6,
+        "0.15": 6,
+        "0.35": 5,
+        "0.5": 4,
+        "0.7": 4,
+        "0.9": 4,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v3-object-000",
+      "split": "object",
+      "title": "+ Velozes + Furiosos",
+      "relevant_id": 584,
+      "target_vote_count": 7992.0,
+      "target_catalog_pct": 97.7,
+      "ranks": {
+        "0.0": 54,
+        "0.15": 25,
+        "0.35": 15,
+        "0.5": 14,
+        "0.7": 13,
+        "0.9": 15,
+        "1.2": 17
+      }
+    },
+    {
+      "qid": "v3-object-001",
+      "split": "object",
+      "title": "Velozes e Furiosos",
+      "relevant_id": 9799,
+      "target_vote_count": 10639.0,
+      "target_catalog_pct": 98.5,
+      "ranks": {
+        "0.0": 29,
+        "0.15": 10,
+        "0.35": 6,
+        "0.5": 4,
+        "0.7": 3,
+        "0.9": 4,
+        "1.2": 4
+      }
+    },
+    {
+      "qid": "v3-object-002",
+      "split": "object",
+      "title": "De Volta para o Futuro",
+      "relevant_id": 105,
+      "target_vote_count": 21390.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-003",
+      "split": "object",
+      "title": "A Origem",
+      "relevant_id": 27205,
+      "target_vote_count": 38689.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 6207,
+        "0.15": 1838,
+        "0.35": 441,
+        "0.5": 228,
+        "0.7": 114,
+        "0.9": 69,
+        "1.2": 38
+      }
+    },
+    {
+      "qid": "v3-object-004",
+      "split": "object",
+      "title": "O Grande Gatsby",
+      "relevant_id": 64682,
+      "target_vote_count": 12804.0,
+      "target_catalog_pct": 99.0,
+      "ranks": {
+        "0.0": 3387,
+        "0.15": 1358,
+        "0.35": 521,
+        "0.5": 304,
+        "0.7": 206,
+        "0.9": 159,
+        "1.2": 123
+      }
+    },
+    {
+      "qid": "v3-object-005",
+      "split": "object",
+      "title": "O Senhor dos Anéis: A Sociedade do Anel",
+      "relevant_id": 120,
+      "target_vote_count": 27011.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 14,
+        "0.15": 7,
+        "0.35": 5,
+        "0.5": 3,
+        "0.7": 3,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-object-006",
+      "split": "object",
+      "title": "Tubarão",
+      "relevant_id": 578,
+      "target_vote_count": 11308.0,
+      "target_catalog_pct": 98.7,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-007",
+      "split": "object",
+      "title": "Brinquedo Assassino",
+      "relevant_id": 10585,
+      "target_vote_count": 3258.0,
+      "target_catalog_pct": 92.5,
+      "ranks": {
+        "0.0": 4,
+        "0.15": 3,
+        "0.35": 3,
+        "0.5": 4,
+        "0.7": 3,
+        "0.9": 3,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v3-object-008",
+      "split": "object",
+      "title": "Janela Indiscreta",
+      "relevant_id": 567,
+      "target_vote_count": 7013.0,
+      "target_catalog_pct": 97.1,
+      "ranks": {
+        "0.0": 3,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-009",
+      "split": "object",
+      "title": "E.T.: O Extraterrestre",
+      "relevant_id": 601,
+      "target_vote_count": 11804.0,
+      "target_catalog_pct": 98.8,
+      "ranks": {
+        "0.0": 1270,
+        "0.15": 556,
+        "0.35": 253,
+        "0.5": 180,
+        "0.7": 140,
+        "0.9": 122,
+        "1.2": 102
+      }
+    },
+    {
+      "qid": "v3-object-010",
+      "split": "object",
+      "title": "Cinderela",
+      "relevant_id": 11224,
+      "target_vote_count": 7043.0,
+      "target_catalog_pct": 97.1,
+      "ranks": {
+        "0.0": 3999,
+        "0.15": 1900,
+        "0.35": 845,
+        "0.5": 569,
+        "0.7": 454,
+        "0.9": 420,
+        "1.2": 444
+      }
+    },
+    {
+      "qid": "v3-object-011",
+      "split": "object",
+      "title": "O Iluminado",
+      "relevant_id": 694,
+      "target_vote_count": 18615.0,
+      "target_catalog_pct": 99.6,
+      "ranks": {
+        "0.0": 225,
+        "0.15": 124,
+        "0.35": 65,
+        "0.5": 36,
+        "0.7": 22,
+        "0.9": 18,
+        "1.2": 14
+      }
+    },
+    {
+      "qid": "v3-object-012",
+      "split": "object",
+      "title": "Fome de Poder",
+      "relevant_id": 310307,
+      "target_vote_count": 5289.0,
+      "target_catalog_pct": 95.8,
+      "ranks": {
+        "0.0": 14766,
+        "0.15": 9276,
+        "0.35": 4789,
+        "0.5": 3127,
+        "0.7": 2156,
+        "0.9": 1761,
+        "1.2": 1491
+      }
+    },
+    {
+      "qid": "v3-object-013",
+      "split": "object",
+      "title": "Forrest Gump: O Contador de Histórias",
+      "relevant_id": 13,
+      "target_vote_count": 29246.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 4175,
+        "0.15": 1176,
+        "0.35": 366,
+        "0.5": 207,
+        "0.7": 105,
+        "0.9": 63,
+        "1.2": 32
+      }
+    },
+    {
+      "qid": "v3-object-014",
+      "split": "object",
+      "title": "Titanic",
+      "relevant_id": 597,
+      "target_vote_count": 26786.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 85,
+        "0.15": 39,
+        "0.35": 15,
+        "0.5": 6,
+        "0.7": 3,
+        "0.9": 2,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-object-015",
+      "split": "object",
+      "title": "Pulp Fiction: Tempo de Violência",
+      "relevant_id": 680,
+      "target_vote_count": 29687.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 15549,
+        "0.15": 7628,
+        "0.35": 2542,
+        "0.5": 1151,
+        "0.7": 562,
+        "0.9": 343,
+        "1.2": 198
+      }
+    },
+    {
+      "qid": "v3-object-016",
+      "split": "object",
+      "title": "Aladdin",
+      "relevant_id": 812,
+      "target_vote_count": 11837.0,
+      "target_catalog_pct": 98.8,
+      "ranks": {
+        "0.0": 3067,
+        "0.15": 1315,
+        "0.35": 523,
+        "0.5": 327,
+        "0.7": 245,
+        "0.9": 206,
+        "1.2": 176
+      }
+    },
+    {
+      "qid": "v3-object-017",
+      "split": "object",
+      "title": "007 Contra Goldfinger",
+      "relevant_id": 658,
+      "target_vote_count": 3865.0,
+      "target_catalog_pct": 93.7,
+      "ranks": {
+        "0.0": 102,
+        "0.15": 66,
+        "0.35": 43,
+        "0.5": 40,
+        "0.7": 37,
+        "0.9": 42,
+        "1.2": 52
+      }
+    },
+    {
+      "qid": "v3-object-018",
+      "split": "object",
+      "title": "Guerra nas Estrelas",
+      "relevant_id": 11,
+      "target_vote_count": 21936.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 3258,
+        "0.15": 1334,
+        "0.35": 503,
+        "0.5": 285,
+        "0.7": 156,
+        "0.9": 99,
+        "1.2": 61
+      }
+    },
+    {
+      "qid": "v3-object-019",
+      "split": "object",
+      "title": "O Mágico de Oz",
+      "relevant_id": 630,
+      "target_vote_count": 6000.0,
+      "target_catalog_pct": 96.3,
+      "ranks": {
+        "0.0": 14890,
+        "0.15": 10110,
+        "0.35": 5614,
+        "0.5": 3701,
+        "0.7": 2454,
+        "0.9": 1880,
+        "1.2": 1502
+      }
+    },
+    {
+      "qid": "v3-object-020",
+      "split": "object",
+      "title": "Náufrago",
+      "relevant_id": 8358,
+      "target_vote_count": 12061.0,
+      "target_catalog_pct": 98.9,
+      "ranks": {
+        "0.0": 1350,
+        "0.15": 706,
+        "0.35": 394,
+        "0.5": 271,
+        "0.7": 186,
+        "0.9": 143,
+        "1.2": 105
+      }
+    },
+    {
+      "qid": "v3-object-021",
+      "split": "object",
+      "title": "Curtindo a Vida Adoidado",
+      "relevant_id": 9377,
+      "target_vote_count": 5273.0,
+      "target_catalog_pct": 95.7,
+      "ranks": {
+        "0.0": 5,
+        "0.15": 4,
+        "0.35": 3,
+        "0.5": 3,
+        "0.7": 4,
+        "0.9": 4,
+        "1.2": 5
+      }
+    },
+    {
+      "qid": "v3-object-022",
+      "split": "object",
+      "title": "As Crônicas de Nárnia: O Leão, a Feiticeira e o Guarda-Roupa",
+      "relevant_id": 411,
+      "target_vote_count": 11318.0,
+      "target_catalog_pct": 98.7,
+      "ranks": {
+        "0.0": 18,
+        "0.15": 10,
+        "0.35": 5,
+        "0.5": 4,
+        "0.7": 4,
+        "0.9": 3,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-object-023",
+      "split": "object",
+      "title": "Piratas do Caribe: A Maldição do Pérola Negra",
+      "relevant_id": 22,
+      "target_vote_count": 21873.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 2,
+        "0.15": 2,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-024",
+      "split": "object",
+      "title": "Indiana Jones e os Caçadores da Arca Perdida",
+      "relevant_id": 85,
+      "target_vote_count": 13386.0,
+      "target_catalog_pct": 99.1,
+      "ranks": {
+        "0.0": 16,
+        "0.15": 6,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-025",
+      "split": "object",
+      "title": "Transformers",
+      "relevant_id": 1858,
+      "target_vote_count": 11985.0,
+      "target_catalog_pct": 98.8,
+      "ranks": {
+        "0.0": 30,
+        "0.15": 23,
+        "0.35": 13,
+        "0.5": 11,
+        "0.7": 11,
+        "0.9": 10,
+        "1.2": 10
+      }
+    },
+    {
+      "qid": "v3-object-026",
+      "split": "object",
+      "title": "Capitão América: O Primeiro Vingador",
+      "relevant_id": 1771,
+      "target_vote_count": 22453.0,
+      "target_catalog_pct": 99.8,
+      "ranks": {
+        "0.0": 138,
+        "0.15": 60,
+        "0.35": 19,
+        "0.5": 10,
+        "0.7": 7,
+        "0.9": 7,
+        "1.2": 5
+      }
+    },
+    {
+      "qid": "v3-object-027",
+      "split": "object",
+      "title": "Vingadores: Guerra Infinita",
+      "relevant_id": 299536,
+      "target_vote_count": 31476.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 21,
+        "0.15": 8,
+        "0.35": 5,
+        "0.5": 5,
+        "0.7": 4,
+        "0.9": 3,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-object-028",
+      "split": "object",
+      "title": "Gran Torino",
+      "relevant_id": 13223,
+      "target_vote_count": 11347.0,
+      "target_catalog_pct": 98.8,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-029",
+      "split": "object",
+      "title": "De Volta para o Futuro II",
+      "relevant_id": 165,
+      "target_vote_count": 13673.0,
+      "target_catalog_pct": 99.2,
+      "ranks": {
+        "0.0": 15037,
+        "0.15": 8794,
+        "0.35": 3693,
+        "0.5": 2038,
+        "0.7": 1148,
+        "0.9": 831,
+        "1.2": 648
+      }
+    },
+    {
+      "qid": "v3-object-030",
+      "split": "object",
+      "title": "Harry Potter e a Câmara Secreta",
+      "relevant_id": 672,
+      "target_vote_count": 23256.0,
+      "target_catalog_pct": 99.9,
+      "ranks": {
+        "0.0": 8518,
+        "0.15": 4108,
+        "0.35": 1258,
+        "0.5": 615,
+        "0.7": 356,
+        "0.9": 247,
+        "1.2": 159
+      }
+    },
+    {
+      "qid": "v3-object-031",
+      "split": "object",
+      "title": "Velocidade Máxima",
+      "relevant_id": 1637,
+      "target_vote_count": 6687.0,
+      "target_catalog_pct": 96.9,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-032",
+      "split": "object",
+      "title": "Guardiões da Galáxia",
+      "relevant_id": 118340,
+      "target_vote_count": 29324.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 15888,
+        "0.15": 8354,
+        "0.35": 2931,
+        "0.5": 1472,
+        "0.7": 707,
+        "0.9": 387,
+        "1.2": 189
+      }
+    },
+    {
+      "qid": "v3-object-033",
+      "split": "object",
+      "title": "Tron: O Legado",
+      "relevant_id": 20526,
+      "target_vote_count": 7761.0,
+      "target_catalog_pct": 97.6,
+      "ranks": {
+        "0.0": 5,
+        "0.15": 4,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-034",
+      "split": "object",
+      "title": "Os Vingadores: The Avengers",
+      "relevant_id": 24428,
+      "target_vote_count": 35925.0,
+      "target_catalog_pct": 100.0,
+      "ranks": {
+        "0.0": 10,
+        "0.15": 4,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 1
+      }
+    },
+    {
+      "qid": "v3-object-035",
+      "split": "object",
+      "title": "A Ressaca",
+      "relevant_id": 23048,
+      "target_vote_count": 2671.0,
+      "target_catalog_pct": 90.9,
+      "ranks": {
+        "0.0": 26,
+        "0.15": 19,
+        "0.35": 14,
+        "0.5": 14,
+        "0.7": 14,
+        "0.9": 17,
+        "1.2": 26
+      }
+    },
+    {
+      "qid": "v3-object-036",
+      "split": "object",
+      "title": "Alice no País das Maravilhas",
+      "relevant_id": 12092,
+      "target_vote_count": 6176.0,
+      "target_catalog_pct": 96.5,
+      "ranks": {
+        "0.0": 120,
+        "0.15": 82,
+        "0.35": 59,
+        "0.5": 51,
+        "0.7": 40,
+        "0.9": 36,
+        "1.2": 39
+      }
+    },
+    {
+      "qid": "v3-object-037",
+      "split": "object",
+      "title": "O Violino Vermelho",
+      "relevant_id": 14283,
+      "target_vote_count": 442.0,
+      "target_catalog_pct": 62.0,
+      "ranks": {
+        "0.0": 6,
+        "0.15": 6,
+        "0.35": 8,
+        "0.5": 10,
+        "0.7": 13,
+        "0.9": 20,
+        "1.2": 85
+      }
+    },
+    {
+      "qid": "v3-object-038",
+      "split": "object",
+      "title": "Uma História Real",
+      "relevant_id": 404,
+      "target_vote_count": 1741.0,
+      "target_catalog_pct": 86.4,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 2
+      }
+    },
+    {
+      "qid": "v3-object-039",
+      "split": "object",
+      "title": "Gremlins",
+      "relevant_id": 927,
+      "target_vote_count": 6852.0,
+      "target_catalog_pct": 97.0,
+      "ranks": {
+        "0.0": 7,
+        "0.15": 5,
+        "0.35": 1,
+        "0.5": 1,
+        "0.7": 1,
+        "0.9": 1,
+        "1.2": 3
+      }
+    },
+    {
+      "qid": "v3-object-040",
+      "split": "object",
+      "title": "Eles Vivem",
+      "relevant_id": 8337,
+      "target_vote_count": 3355.0,
+      "target_catalog_pct": 92.7,
+      "ranks": {
+        "0.0": 34,
+        "0.15": 18,
+        "0.35": 10,
+        "0.5": 12,
+        "0.7": 17,
+        "0.9": 22,
+        "1.2": 33
+      }
+    },
+    {
+      "qid": "v3-object-041",
+      "split": "object",
+      "title": "O Caçador de Pipas",
+      "relevant_id": 7979,
+      "target_vote_count": 1225.0,
+      "target_catalog_pct": 81.7,
+      "ranks": {
+        "0.0": 1,
+        "0.15": 1,
+        "0.35": 2,
+        "0.5": 2,
+        "0.7": 2,
+        "0.9": 2,
+        "1.2": 2
+      }
+    }
+  ]
+}

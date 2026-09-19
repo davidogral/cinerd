@@ -1,0 +1,82 @@
+{
+  "run": {
+    "kind": "paired-bootstrap",
+    "source": "eval/results/latest__entity.json",
+    "source_run": {
+      "timestamp_utc": "2026-09-18T18:00:02Z",
+      "git_commit": "5c02c53",
+      "split": "entity",
+      "dataset_sha1": "cf6aaec67c77afd44b79e9fc7761db3bd59ce8af"
+    },
+    "metric": "ndcg@10",
+    "baseline": "fusion",
+    "n_boot": 10000,
+    "seed": 20260918,
+    "alpha": 0.05,
+    "cluster_by": "none",
+    "source_filter": null,
+    "multiplicity": "holm"
+  },
+  "comparisons": [
+    {
+      "n": 20,
+      "n_clusters": 20,
+      "mean_a": 0.7783262906565166,
+      "mean_b": 0.7271588253153194,
+      "delta": -0.05116746534119722,
+      "ci_low": -0.15860070058609552,
+      "ci_high": 0.034050182672415816,
+      "ci_halfwidth": 0.09632544162925566,
+      "p_value": 0.2982,
+      "wins": 3,
+      "losses": 4,
+      "ties": 13,
+      "n_boot": 10000,
+      "seed": 20260918,
+      "alpha": 0.05,
+      "baseline": "fusion",
+      "pipeline": "rrf",
+      "p_holm": 0.8946000000000001
+    },
+    {
+      "n": 20,
+      "n_clusters": 20,
+      "mean_a": 0.7783262906565166,
+      "mean_b": 0.7864050593414154,
+      "delta": 0.00807876868489885,
+      "ci_low": -0.026598882175634164,
+      "ci_high": 0.04056562584272905,
+      "ci_halfwidth": 0.033582254009181606,
+      "p_value": 0.6002,
+      "wins": 4,
+      "losses": 1,
+      "ties": 15,
+      "n_boot": 10000,
+      "seed": 20260918,
+      "alpha": 0.05,
+      "baseline": "fusion",
+      "pipeline": "fusion_learned",
+      "p_holm": 1.0
+    },
+    {
+      "n": 20,
+      "n_clusters": 20,
+      "mean_a": 0.7783262906565166,
+      "mean_b": 0.7563033818126488,
+      "delta": -0.02202290884386777,
+      "ci_low": -0.10569430500410605,
+      "ci_high": 0.06190702464285425,
+      "ci_halfwidth": 0.08380066482348014,
+      "p_value": 0.6028,
+      "wins": 3,
+      "losses": 5,
+      "ties": 12,
+      "n_boot": 10000,
+      "seed": 20260918,
+      "alpha": 0.05,
+      "baseline": "fusion",
+      "pipeline": "fusion_rerank",
+      "p_holm": 1.0
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Avaliação executável do SRI — substitui o notebook como fonte de verdade.
 
-    .venv/bin/python -m eval.run                     # split de teste, 5 pipelines
+    .venv/bin/python -m eval.run                     # split de teste, 8 pipelines
     .venv/bin/python -m eval.run --split dev
     .venv/bin/python -m eval.run --fast              # pula o re-ranker (rápido)
     .venv/bin/python -m eval.run --pipelines fusion,fusion_rerank
@@ -54,13 +54,40 @@ def _git_commit() -> str | None:
 
 
 def _engine_meta() -> dict:
+    """Identidade do índice usado na rodada.
+
+    Além dos metadados declarados (`meta.json`), grava a **impressão digital**
+    dos artefatos — SHA-256 por arquivo e um hash combinado. O índice não é
+    redistribuível (DVC com credencial privada + licença da fonte), então essa
+    impressão é o que permite a um terceiro reconstruir o índice e **verificar**
+    se chegou ao mesmo artefato. Ver `eval/fingerprint.py` e
+    `docs/PROTOCOLO-TOIS.md` §11.1."""
+    from eval.fingerprint import fingerprint
+
+    out: dict = {}
     p = os.path.join(_ROOT, "retrieval", "index", "meta.json")
     try:
         with open(p, encoding="utf-8") as fh:
             m = json.load(fh)
-        return {k: m[k] for k in ("n_movies", "embed_model", "embed_dim", "lexical") if k in m}
+        out = {k: m[k] for k in ("n_movies", "embed_model", "embed_dim", "lexical") if k in m}
     except Exception:
-        return {}
+        out = {}
+    try:
+        index_dir = os.environ.get("RECOMENDAI_INDEX_DIR") or os.path.join(_ROOT, "retrieval", "index")
+        if not os.path.isabs(index_dir):
+            index_dir = os.path.join(_ROOT, index_dir)
+        fp = fingerprint(index_dir)
+        if fp:
+            out["index_fingerprint"] = {
+                "dir": fp["dir"],
+                "n_files": fp["n_files"],
+                "total_bytes": fp["total_bytes"],
+                "combined_sha256": fp["combined_sha256"],
+                "files": fp["files"],
+            }
+    except Exception:
+        pass
+    return out
 
 
 def _env_snapshot() -> dict:
