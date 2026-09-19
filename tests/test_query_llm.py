@@ -61,12 +61,14 @@ def test_understand_parses_object_query(monkeypatch):
     from core import query_llm
 
     monkeypatch.setattr(query_llm, "GROQ_API_KEY", "fake-key")
-    payload = json.dumps({
-        "tipo": "objeto",
-        "consulta_reescrita": "Nissan Skyline azul e prata",
-        "pistas_pessoa": [],
-        "pistas_objeto": ["Nissan Skyline", "azul e prata"],
-    })
+    payload = json.dumps(
+        {
+            "tipo": "objeto",
+            "consulta_reescrita": "Nissan Skyline azul e prata",
+            "pistas_pessoa": [],
+            "pistas_objeto": ["Nissan Skyline", "azul e prata"],
+        }
+    )
     monkeypatch.setattr(query_llm.requests, "post", _fake_post(content=payload))
 
     plan = query_llm.understand("Arrancada com skyline azul e prata")
@@ -143,11 +145,13 @@ def test_rewrite_query_appends_pistas_objeto_never_replaces(monkeypatch):
     from core import inference_client, query_llm
 
     monkeypatch.setattr(query_llm, "GROQ_API_KEY", "fake-key")
-    payload = json.dumps({
-        "tipo": "objeto",
-        "consulta_reescrita": "nao devia aparecer no resultado",
-        "pistas_objeto": ["Nissan Skyline GT-R"],
-    })
+    payload = json.dumps(
+        {
+            "tipo": "objeto",
+            "consulta_reescrita": "nao devia aparecer no resultado",
+            "pistas_objeto": ["Nissan Skyline GT-R"],
+        }
+    )
     monkeypatch.setattr(query_llm.requests, "post", _fake_post(content=payload))
 
     q = "carro azul e prata dando arrancada numa corrida de rua a noite"
@@ -202,11 +206,13 @@ def test_rewrite_query_returns_pistas_pessoa_for_tipo_pessoa(monkeypatch):
     from core import inference_client, query_llm
 
     monkeypatch.setattr(query_llm, "GROQ_API_KEY", "fake-key")
-    payload = json.dumps({
-        "tipo": "pessoa",
-        "consulta_reescrita": "nao devia importar aqui",
-        "pistas_pessoa": ["decorated by the Queen", "had a heavy metal band"],
-    })
+    payload = json.dumps(
+        {
+            "tipo": "pessoa",
+            "consulta_reescrita": "nao devia importar aqui",
+            "pistas_pessoa": ["decorated by the Queen", "had a heavy metal band"],
+        }
+    )
     monkeypatch.setattr(query_llm.requests, "post", _fake_post(content=payload))
 
     q = "ator condecorado pela rainha da inglaterra que tinha uma banda de heavy metal"
@@ -354,6 +360,7 @@ def test_rerank_confirm_failure_is_not_cached(monkeypatch):
 
 # ============================================================ _llm_rerank
 
+
 def _results_from_candidates():
     return [
         {"tmdb_id": 101, "title": "Filme A", "release_year": 2001, "overview": "sinopse A"},
@@ -412,6 +419,7 @@ def test_llm_rerank_noop_without_query_or_with_single_result(monkeypatch):
 
 # =================================================== _pull_franchise_siblings
 
+
 def test_pull_franchise_siblings_noop_without_collection(monkeypatch):
     from core import inference_client, tmdb
 
@@ -445,16 +453,31 @@ def test_pull_franchise_siblings_inserts_missing_sibling_from_catalog(monkeypatc
 
     monkeypatch.setattr(tmdb, "movie_details", lambda tid: {"collection": {"id": 999, "name": "Franquia X"}})
     monkeypatch.setattr(
-        tmdb, "collection_movies",
-        lambda cid: {"id": cid, "name": "Franquia X", "parts": [
-            {"tmdb_id": 101, "title": "Filme A", "release_year": 2001},
-            {"tmdb_id": 999101, "title": "Filme A 2", "release_year": 2003},
-        ]},
+        tmdb,
+        "collection_movies",
+        lambda cid: {
+            "id": cid,
+            "name": "Franquia X",
+            "parts": [
+                {"tmdb_id": 101, "title": "Filme A", "release_year": 2001},
+                {"tmdb_id": 999101, "title": "Filme A 2", "release_year": 2003},
+            ],
+        },
     )
     monkeypatch.setattr(
-        catalog, "get_movie",
-        lambda tid: {"title": "Filme A 2", "release_year": 2003, "original_language": "en",
-                     "vote_average": 6.5, "overview": "sinopse do segundo filme"} if tid == 999101 else None,
+        catalog,
+        "get_movie",
+        lambda tid: (
+            {
+                "title": "Filme A 2",
+                "release_year": 2003,
+                "original_language": "en",
+                "vote_average": 6.5,
+                "overview": "sinopse do segundo filme",
+            }
+            if tid == 999101
+            else None
+        ),
     )
 
     original = _results_from_candidates()  # tmdb_ids 101, 102, 103
@@ -470,11 +493,16 @@ def test_pull_franchise_siblings_moves_existing_sibling_up(monkeypatch):
 
     monkeypatch.setattr(tmdb, "movie_details", lambda tid: {"collection": {"id": 999, "name": "Franquia X"}})
     monkeypatch.setattr(
-        tmdb, "collection_movies",
-        lambda cid: {"id": cid, "name": "Franquia X", "parts": [
-            {"tmdb_id": 101, "title": "Filme A", "release_year": 2001},
-            {"tmdb_id": 103, "title": "Filme A 3", "release_year": 2003},
-        ]},
+        tmdb,
+        "collection_movies",
+        lambda cid: {
+            "id": cid,
+            "name": "Franquia X",
+            "parts": [
+                {"tmdb_id": 101, "title": "Filme A", "release_year": 2001},
+                {"tmdb_id": 103, "title": "Filme A 3", "release_year": 2003},
+            ],
+        },
     )
 
     original = _results_from_candidates()  # 101, 102, 103
@@ -497,16 +525,31 @@ def test_pull_franchise_siblings_keeps_known_order_over_release_date(monkeypatch
 
     monkeypatch.setattr(tmdb, "movie_details", lambda tid: {"collection": {"id": 999, "name": "Franquia X"}})
     monkeypatch.setattr(
-        tmdb, "collection_movies",
-        lambda cid: {"id": cid, "name": "Franquia X", "parts": [
-            {"tmdb_id": 999001, "title": "Filme A 0 (mais antigo)", "release_year": 1999},
-            {"tmdb_id": 103, "title": "Filme A 3", "release_year": 2003},
-        ]},
+        tmdb,
+        "collection_movies",
+        lambda cid: {
+            "id": cid,
+            "name": "Franquia X",
+            "parts": [
+                {"tmdb_id": 999001, "title": "Filme A 0 (mais antigo)", "release_year": 1999},
+                {"tmdb_id": 103, "title": "Filme A 3", "release_year": 2003},
+            ],
+        },
     )
     monkeypatch.setattr(
-        catalog, "get_movie",
-        lambda tid: {"title": "Filme A 0 (mais antigo)", "release_year": 1999, "original_language": "en",
-                     "vote_average": 5.0, "overview": ""} if tid == 999001 else None,
+        catalog,
+        "get_movie",
+        lambda tid: (
+            {
+                "title": "Filme A 0 (mais antigo)",
+                "release_year": 1999,
+                "original_language": "en",
+                "vote_average": 5.0,
+                "overview": "",
+            }
+            if tid == 999001
+            else None
+        ),
     )
 
     original = [
@@ -526,17 +569,28 @@ def test_pull_franchise_siblings_respects_max_cap(monkeypatch):
     monkeypatch.setattr(inference_client, "FRANCHISE_PULLUP_MAX", 1)
     monkeypatch.setattr(tmdb, "movie_details", lambda tid: {"collection": {"id": 999, "name": "Franquia X"}})
     monkeypatch.setattr(
-        tmdb, "collection_movies",
-        lambda cid: {"id": cid, "name": "Franquia X", "parts": [
-            {"tmdb_id": 101, "title": "Filme A", "release_year": 2001},
-            {"tmdb_id": 201, "title": "Filme A 2", "release_year": 2003},
-            {"tmdb_id": 202, "title": "Filme A 3", "release_year": 2005},
-        ]},
+        tmdb,
+        "collection_movies",
+        lambda cid: {
+            "id": cid,
+            "name": "Franquia X",
+            "parts": [
+                {"tmdb_id": 101, "title": "Filme A", "release_year": 2001},
+                {"tmdb_id": 201, "title": "Filme A 2", "release_year": 2003},
+                {"tmdb_id": 202, "title": "Filme A 3", "release_year": 2005},
+            ],
+        },
     )
     monkeypatch.setattr(
-        catalog, "get_movie",
-        lambda tid: {"title": f"Filme {tid}", "release_year": 2000, "original_language": "en",
-                     "vote_average": 6.0, "overview": ""},
+        catalog,
+        "get_movie",
+        lambda tid: {
+            "title": f"Filme {tid}",
+            "release_year": 2000,
+            "original_language": "en",
+            "vote_average": 6.0,
+            "overview": "",
+        },
     )
 
     original = _results_from_candidates()

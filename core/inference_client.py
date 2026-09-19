@@ -129,8 +129,12 @@ def _llm_rerank(query: str, results: list[dict]) -> list[dict]:
     from core import catalog, metrics, query_llm
 
     candidates = [
-        {"tmdb_id": r.get("tmdb_id"), "title": r.get("title"), "year": r.get("release_year"),
-         "overview": (catalog.get_movie(r.get("tmdb_id")) or {}).get("overview") or r.get("overview")}
+        {
+            "tmdb_id": r.get("tmdb_id"),
+            "title": r.get("title"),
+            "year": r.get("release_year"),
+            "overview": (catalog.get_movie(r.get("tmdb_id")) or {}).get("overview") or r.get("overview"),
+        }
         for r in results
     ]
     with metrics.stage_timer("rerank_llm"):
@@ -171,7 +175,9 @@ def _llm_rerank(query: str, results: list[dict]) -> list[dict]:
 # lançamento. Remedido: entity 0.778->0.780 (0 regressões, antes tinha 3),
 # object 0.325->0.340 (melhor que a 1ª versão, que só ia a 0.328).
 FRANCHISE_PULLUP_ENABLED = os.environ.get("RECOMENDAI_FRANCHISE_PULLUP", "1").strip().lower() not in (
-    "0", "false", "no",
+    "0",
+    "false",
+    "no",
 )
 # Sem teto de propósito (decisão do Davi: se a franquia toda ocupar a
 # página de resultados, não é problema — o objetivo é achar o filme certo,
@@ -223,15 +229,17 @@ def _pull_franchise_siblings(results: list[dict]) -> list[dict]:
         mv = catalog.get_movie(tid)
         if mv is None:
             continue
-        unknown.append({
-            "tmdb_id": tid,
-            "title": mv.get("title"),
-            "release_year": mv.get("release_year"),
-            "original_language": mv.get("original_language"),
-            "vote_average": mv.get("vote_average"),
-            "overview": catalog.truncate_overview(mv.get("overview") or ""),
-            "why": ["Mesma franquia"],
-        })
+        unknown.append(
+            {
+                "tmdb_id": tid,
+                "title": mv.get("title"),
+                "release_year": mv.get("release_year"),
+                "original_language": mv.get("original_language"),
+                "vote_average": mv.get("vote_average"),
+                "overview": catalog.truncate_overview(mv.get("overview") or ""),
+                "why": ["Mesma franquia"],
+            }
+        )
         if len(known) + len(unknown) >= FRANCHISE_PULLUP_MAX:
             break
 
@@ -261,8 +269,14 @@ def search_combined(
         from retrieval.search_engine import get_engine
 
         results = get_engine().search_combined(
-            query=query, director=director, actor=actor, n=fetch_n, filters=filters or None,
-            pistas_pessoa=pistas_pessoa, plot_lexical_weight=plot_lexical_weight, entity_weight=entity_weight,
+            query=query,
+            director=director,
+            actor=actor,
+            n=fetch_n,
+            filters=filters or None,
+            pistas_pessoa=pistas_pessoa,
+            plot_lexical_weight=plot_lexical_weight,
+            entity_weight=entity_weight,
         )
     if RERANK_LLM_ENABLED and query:
         results = _llm_rerank(query, results)
