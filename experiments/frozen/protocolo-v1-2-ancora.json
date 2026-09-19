@@ -1,0 +1,12 @@
+{
+  "label": "protocolo-v1-2-ancora",
+  "path": "docs/PROTOCOLO-TOIS.md",
+  "sha256": "98173d7a100b7f027b4377f88c27c014bdae284793dc92293eccbd563625a327",
+  "bytes": 25673,
+  "frozen_utc": "2026-09-19T18:32:35Z",
+  "git_commit": "13c85e7a4622c04ae39359745f3932072fe2a929",
+  "git_commit_short": "13c85e7",
+  "git_branch": "tois/fatorial-v3-e-trava-do-primeiro-resultado",
+  "uncommitted_at_freeze": false,
+  "note": "Âncora de commit da v1.2. NÃO é um novo congelamento: o pré-registro é protocolo-v1-2.json (2026-09-19T02:20:33Z), e o SHA-256 aqui é idêntico ao dele — é essa igualdade que prova que o texto não mudou. O que este registro acrescenta é um commit que CONTÉM o texto congelado, com a árvore limpa, antes de abrir a janela de coleta prospectiva."
+}

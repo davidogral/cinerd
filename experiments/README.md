@@ -38,6 +38,8 @@ Tudo que o [protocolo](../docs/PROTOCOLO-TOIS.md) exige e que **não pode viver 
 | [`taxonomy.py`](taxonomy.py) | onde a verificação ajuda, onde prejudica, de quem é a falha, e o teto de recuperação | 3 |
 | [`features.py`](features.py) | sinais **pré-chamada** (consulta, ranking, evidência, operação) | 4 |
 | [`policy.py`](policy.py) | nunca/sempre/aleatória/limiar/regras/aprendida/oráculo + fronteira qualidade–custo | 4 |
+| [`protect.py`](protect.py) | a terceira ação: chamar **sem** autoridade para reordenar o #1. Recomputa do que já foi gravado, **sem chamada nova** | 4 |
+| [`variability.py`](variability.py) | repetições sem cache: mudança de decisão, impacto no ranking, falhas, sensibilidade à ordem | 3 |
 
 Estatística (bootstrap pareado, potência) fica em [`eval/stats.py`](../eval/stats.py)
 — é determinística, então pertence a `eval/`, e lê tanto os JSON de `eval.run`
@@ -57,14 +59,23 @@ set -a && . ./.env && set +a
 .venv/bin/python -m eval.stats compare \
     --results experiments/results/<stamp>__factorial-hard.json --baseline C00 --metric success@1
 
-# 3. variabilidade real do provedor (sem cache, 5 execuções)
+# 3. variabilidade real do provedor (sem cache, 5 execuções) + leitura
 .venv/bin/python -m experiments.factorial --split hard --repeats 5 --sample 10
+.venv/bin/python -m experiments.variability experiments/results/<stamp>__factorial-hard.json
+
+# 3a. sensibilidade à ORDEM dos candidatos (§7.3) — roda no local, sem cota
+.venv/bin/python -m experiments.factorial --split hard --repeats 5 --ordem embaralhada \
+    --provider-confirm local
 
 # 3b. a taxonomia de ganhos e danos (só lê arquivo, não chama nada)
 .venv/bin/python -m experiments.taxonomy experiments/results/*__factorial-*.json --before C00 --after C11
 
-# 4. a política seletiva
+# 4. a política seletiva (chamar ou não)
 .venv/bin/python -m experiments.policy --factorial experiments/results/*__factorial-*.json
+
+# 4a. a terceira ação: chamar com o #1 travado. NÃO gasta cota.
+#     recusa o split `hard`, que foi quem gerou a hipótese.
+.venv/bin/python -m experiments.protect --factorial experiments/results/*__factorial-object.json --cv 5
 
 # 5. custo sob preço de mercado declarado
 .venv/bin/python -m experiments.factorial --split hard --prices experiments/prices.json

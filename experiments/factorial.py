@@ -78,6 +78,7 @@ import argparse
 import hashlib
 import json
 import os
+import random
 import subprocess
 from datetime import datetime, timezone
 from typing import Optional
@@ -202,7 +203,14 @@ def _first_stage(engine, q, plan: Optional[dict], pool: int) -> dict:
 
 
 def run_query(
-    engine, q, runner: LLMRunner, conds: list[str], pool: int, repeat: int, use_cache: bool
+    engine,
+    q,
+    runner: LLMRunner,
+    conds: list[str],
+    pool: int,
+    repeat: int,
+    use_cache: bool,
+    order_seed: Optional[int] = None,
 ) -> dict[str, dict]:
     """**Todas** as células de UMA consulta, na mesma sessão.
 
@@ -212,6 +220,12 @@ def run_query(
     C01/C11 em outro — e qualquer mudança do serviço entre os dias apareceria
     como se fosse efeito da condição. Assim, ou a consulta tem as quatro células
     do mesmo momento, ou não entra.
+
+    `order_seed` embaralha a **ordem de apresentação** dos candidatos ao
+    verificador, de forma determinística por (consulta, semente). Serve à
+    sensibilidade à ordem exigida pelo protocolo §7.3: a lista enviada muda, o
+    conjunto não, e a promoção continua usando a ordem da fusão — então qualquer
+    diferença no resultado é do modelo, não do pipeline.
 
     Levanta `QuotaExhausted` se a cota diária acabar no meio: o chamador
     descarta esta consulta e grava o que já estava completo."""
@@ -232,7 +246,11 @@ def run_query(
         st = stages[use_a]
         rank_final, picks, confirmed_target, false_confirm = st["rank_first"], [], None, None
         if use_b:
-            picks, _ = runner.confirm(q.qid, st["q_eff"], st["cands"], repeat=repeat, use_cache=use_cache)
+            cands = st["cands"]
+            if order_seed is not None:
+                cands = list(cands)
+                random.Random(f"{q.qid}:{order_seed}").shuffle(cands)
+            picks, _ = runner.confirm(q.qid, st["q_eff"], cands, repeat=repeat, use_cache=use_cache)
             if runner.quota_exhausted:
                 raise QuotaExhausted(runner.quota_exhausted)
             ids_after = _promote(st["ids"], picks)
@@ -263,6 +281,7 @@ def run_query(
             "query_effective": st["q_eff"],
             "query_changed": st["q_eff"] != q.query,
             "tipo": st["tipo"],
+            "order_seed": order_seed,
             "n_picks": len(picks),
             "picks": picks,
             "confirmed_target": confirmed_target,
@@ -371,6 +390,13 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--pool", type=int, default=None, help="candidatos enviados ao verificador (default: produção)")
     ap.add_argument("--sample", type=int, default=None, help="usa só as N primeiras consultas do split")
     ap.add_argument("--repeats", type=int, default=0, help="repetições SEM cache, para medir variabilidade (§7.3)")
+    ap.add_argument(
+        "--ordem",
+        choices=["fixa", "embaralhada"],
+        default="fixa",
+        help="ordem dos candidatos nas repetições: `fixa` isola o não determinismo do provedor; "
+        "`embaralhada` mede sensibilidade à ordem de apresentação (§7.3)",
+    )
     ap.add_argument("--prices", help="JSON de preço por milhão de tokens, por modelo")
     ap.add_argument(
         "--provider",
@@ -471,7 +497,8 @@ def main(argv: Optional[list[str]] = None) -> int:
             rows = []
             try:
                 for q in sub:
-                    rows.append(run_query(engine, q, runner, ["C11"], pool, r, False)["C11"])
+                    seed = r if args.ordem == "embaralhada" else None
+                    rows.append(run_query(engine, q, runner, ["C11"], pool, r, False, order_seed=seed)["C11"])
             except QuotaExhausted as exc:
                 stopped = str(exc)
                 print(f"    cota esgotada na repetição {r}; {len(rows)} consultas medidas.")
@@ -494,6 +521,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             "partial": bool(stopped),
             "stopped_reason": stopped,
             "query_major": True,
+            "repeat_order": args.ordem,
             "dataset_sha1": dataset_sha1(),
             "conditions": conds,
             "pool": pool,
