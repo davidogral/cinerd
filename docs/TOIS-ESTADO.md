@@ -77,11 +77,13 @@ inteiro** (não dentro do conjunto de consultas, que já é enviesado):
 | muito popular (≥P99) | 127 | 0,707 | 0,771 | **+0,064** [+0,039; +0,092] | **26**/0 |
 | agregado | 234 | 0,709 | 0,736 | +0,027 [+0,005; +0,048] | 39/14 |
 
-O ganho agregado é real, mas **inteiramente** do estrato mais popular; um estrato
-abaixo o efeito **inverte com folga**. O peso 0,90 não melhora a busca — move
-massa para filmes famosos, o que compensa num conjunto em que 94% dos alvos estão
-acima do percentil 90. **Decisão: o prior fica em 0,35**, agora apoiado em
-evidência por estrato.
+O ganho agregado é real, mas **predominantemente impulsionado** pelo estrato
+≥P99, o único com efeito claramente positivo. No estrato P90–P99 (94 consultas)
+o efeito é de apenas +0,015 e **o intervalo contém zero** — já ali o benefício
+deixa de ser distinguível. Entre P50 e P90 ele **inverte**. **Decisão: o prior
+fica em 0,35** como escolha conservadora; a análise mostra heterogeneidade forte
+e não sustenta a adoção global de 0,90, mas com 11 consultas em P50–P90 e 2
+abaixo da mediana ela **não decide** qual peso é ótimo numa população real.
 
 E o achado que mais importa para o artigo: **o alvo da consulta mediana está no
 percentil 99 do catálogo**, e só **duas** das 234 consultas têm alvo abaixo da
@@ -237,11 +239,14 @@ consultas pioradas tinham o #1 já correto**.
 1. **O plano de rodar `object`/`entity` localmente está morto.** O modelo local
    mede um sistema diferente. Essas execuções continuam dependendo da cota do
    Groq, distribuídas por dias.
-2. **Virou resultado de RQ3, que é melhor do que era o plano.** O ganho da
-   confirmação **não é propriedade da técnica**, é do verificador. Um leitor com
-   um modelo aberto de 8B — a opção natural de quem não tem orçamento de API —
-   **não reproduz** o número do artigo. A falha é de **calibração de recusa**,
-   não de conhecimento.
+2. **Virou resultado de RQ3, que é melhor do que era o plano.** Um leitor que
+   troque o verificador pelo **modelo aberto menor aqui avaliado** não reproduz
+   o número do artigo — e **a transferência para outros modelos locais não deve
+   ser presumida**, nas duas direções. O padrão observado aponta para **falha de
+   calibração de recusa** e não para incapacidade de localizar o alvo, com a
+   ressalva de que conhecimento e calibração **não foram manipulados como
+   fatores independentes**: a leitura é sugerida pelo padrão, não demonstrada
+   por decomposição causal.
 
    **O que o experimento NÃO autoriza concluir:** foi avaliado **um** modelo
    menor específico, numa quantização específica, sob um framework específico.
