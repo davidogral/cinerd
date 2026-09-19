@@ -5,12 +5,14 @@ Avaliação **executável e versionada** da busca por sinopse. Substitui o
 exploração manual.
 
 ```bash
-.venv/bin/python -m eval.run                 # split de teste, 5 pipelines, grava JSON
+.venv/bin/python -m eval.run                 # split de teste, 8 pipelines, grava JSON
 .venv/bin/python -m eval.run --split dev      # calibração (não reportar como resultado)
 .venv/bin/python -m eval.run --fast           # sem o cross-encoder (segundos, não minutos)
 .venv/bin/python -m eval.run --pipelines fusion,fusion_rerank
 .venv/bin/python -m eval.run --sweep-rerank   # curva qualidade × latência do pool do cross-encoder
 .venv/bin/python -m eval.latency              # p50/p95/p99 por etapa do pipeline + RSS
+.venv/bin/python -m eval.stats compare --split test   # diferença + IC 95% (bootstrap pareado)
+.venv/bin/python -m eval.train_fusion         # treina o baseline de fusão linear (só no dev)
 ```
 
 > **Produção roda sem o cross-encoder** (`RECOMENDAI_RERANK=0`, o default em
@@ -67,7 +69,26 @@ ser held-out limpo.
 | `embedding` | só semântico (cosseno com embedding da sinopse) |
 | `thematic` | só temático (cosseno com embedding de keywords/gêneros) |
 | `fusion` | fusão z-score dos 3 sinais + prior de popularidade — **pipeline de produção** |
+| `fusion_prf` | a fusão + pseudo-relevance feedback (Rocchio) sobre o top-k |
+| `rrf` | **Reciprocal Rank Fusion** sobre exatamente os mesmos canais (k=60) |
+| `fusion_learned` | soma linear dos mesmos canais com pesos **ajustados automaticamente no dev** (`eval/train_fusion.py`) |
 | `fusion_rerank` | a fusão + cross-encoder no top-`RERANK_POOL` (50) — variante experimental, off em produção |
+
+### Baselines de combinação — por que existem
+
+A ablação por sinal compara a fusão contra pedaços dela mesma; não responde
+"e se a regra de combinação fosse outra?" nem "quanto disso é o ajuste manual
+dos pesos?". Os dois baselines acima respondem exatamente isso, sobre o mesmo
+índice e as mesmas consultas:
+
+* **`rrf`** combina **posição** em vez de magnitude, então é imune por construção
+  ao outlier de escala que motivou o teto de z-score. Cada canal vira uma lista
+  (profundidade 1000; fora dela o filme não pontua, e a cauda empata em 0 — as
+  métricas até @50 não são afetadas, posições no fundo não são interpretáveis).
+* **`fusion_learned`** dá aos mesmos canais um ajuste automático, declarado e
+  reprodutível (busca coordenada, orçamento registrado), treinado **somente no
+  dev**. O peso lexical aprendido é fixo, enquanto o de produção é adaptativo
+  (0,20–0,30): é um modelo deliberadamente mais simples.
 
 ## Ablação leave-one-component-out — [`ablation_components.py`](ablation_components.py)
 
@@ -83,6 +104,33 @@ z-score, via as mesmas env vars documentadas em `retrieval/search_engine.py`.
 Reporta nDCG@10 tanto no split completo quanto no subconjunto `v2`. Ablação
 **parcial**: não remove BM25/embedding/temático nem varia ReLU/limiar do teto —
 ver limitações na Seção V da METODOLOGIA/artigo.
+
+## Inferência estatística — [`stats.py`](stats.py)
+
+```bash
+.venv/bin/python -m eval.stats compare --split test --metric ndcg@10
+.venv/bin/python -m eval.stats compare --split test --metric success@1 --baseline fusion
+.venv/bin/python -m eval.stats compare --split test --cluster-by movie
+.venv/bin/python -m eval.stats power --split test --metric success@1 --delta 0.05
+```
+
+Toda métrica das tabelas acima é uma estimativa pontual sobre 20–95 consultas.
+`eval.stats` transforma a comparação entre dois pipelines em **diferença +
+intervalo de 95%** por **bootstrap pareado** (reamostra consultas, preservando o
+pareamento), com valor-p por inversão e correção de Holm dentro da família de
+comparações. Semente fixa: a mesma entrada dá sempre o mesmo intervalo.
+
+`--cluster-by movie` reamostra clusters (todas as consultas do mesmo filme saem
+juntas), como o protocolo do estudo exige quando houver dependência; no conjunto
+atual cada consulta tem um alvo distinto, então o resultado é idêntico.
+
+`power` simula quantas consultas seriam necessárias para uma precisão-alvo,
+usando a variância observada de um contraste real — é o que dimensiona a coleta
+prospectiva ([`docs/PROTOCOLO-TOIS.md`](../docs/PROTOCOLO-TOIS.md) §8.3).
+
+> **Ler um IC que cruza zero como "empate", não como "igual".** Com n=47, uma
+> diferença de poucos centésimos é indistinguível do ruído amostral — é
+> justamente o que o intervalo do cross-encoder mostra.
 
 ## Saída — `results/`
 
