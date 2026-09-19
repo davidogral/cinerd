@@ -190,18 +190,30 @@ A única regressão tem mecanismo próprio, que vale descrever no artigo: o alvo
 confiança — a confirmação múltipla reordena e pode rebaixar um #1 que já estava
 certo. É dano **sem** confirmação falsa.
 
-### Trocar o verificador mata o ganho — e o plano do modelo local
+### O ganho não se transfere ao verificador local avaliado
 
-O piloto com `--provider local` (Qwen3-8B em 4 bits, MLX) foi feito para liberar
-as partes caras do desenho. **Não serve para isso**, e o motivo é um resultado.
+O piloto com `--provider local` foi feito para liberar as partes caras do
+desenho. **Não serve para isso**, e o motivo é um resultado.
 
-Mesmas 30 consultas, mesmo *prompt*, mesmo *pool*, mesmo primeiro estágio. As
-células sem verificador confirmam que a comparação está limpa: **C00 coincide em
-30/30** e C10 em 29/30.
+**Correção de escopo (importante).** A primeira redação deste achado dizia que
+"só mudou quem julga". **Era falso**: a execução local substituiu **as duas**
+etapas de LLM. O próprio dado denunciou — C00 (sem nenhuma etapa) coincide em
+30/30, mas C10 (só entendimento) diverge em **uma** consulta, aquela que o
+classificador hospedado tipou como "objeto" e o local como "genérico". Uma
+célula sem confirmação não deveria depender do verificador.
+
+O contraste limpo é **C01 − C00**, com entendimento desligado nos dois lados.
+Nesse recorte a comparação é exata: consulta efetiva idêntica em **30/30**,
+posição do alvo no primeiro estágio idêntica em **30/30**, mesmos candidatos na
+mesma ordem.
+
+Consequência de ferramenta: `experiments/factorial.py` ganhou
+`--provider-understand` e `--provider-confirm`, para que a próxima execução
+isole **uma** etapa por vez em vez de trocar as duas.
 
 | | hospedado (27B) | local (8B, 4 bits) |
 |---|---:|---:|
-| Δ Success@1 (C11−C00) | **+0,267** [+0,100; +0,433] | **−0,033** [−0,233; +0,200] |
+| Δ Success@1 (C01−C00) | **+0,267** [+0,100; +0,433] | **−0,033** [−0,233; +0,200] |
 | melhoradas / pioradas | 9 / 1 | 5 / 6 |
 | confirmou o alvo | 20/30 | 15/30 |
 | **confirmações falsas** | **4** | **14** |
@@ -228,8 +240,15 @@ consultas pioradas tinham o #1 já correto**.
 2. **Virou resultado de RQ3, que é melhor do que era o plano.** O ganho da
    confirmação **não é propriedade da técnica**, é do verificador. Um leitor com
    um modelo aberto de 8B — a opção natural de quem não tem orçamento de API —
-   **não reproduz** o número do artigo. Isso delimita o alcance da afirmação e
-   entrou na Seção V do artigo.
+   **não reproduz** o número do artigo. A falha é de **calibração de recusa**,
+   não de conhecimento.
+
+   **O que o experimento NÃO autoriza concluir:** foi avaliado **um** modelo
+   menor específico, numa quantização específica, sob um framework específico.
+   8B contra 27B vem junto com mudança de geração de treino, quantização de 4
+   bits e pilha de inferência — isso não isola o efeito causal do tamanho. A
+   afirmação sustentada é a estreita: *o ganho não se transferiu ao verificador
+   local avaliado*. O título da subseção foi corrigido para dizer isso.
 3. **Uma hipótese de desenho, não testada:** proibir a reordenação quando o
    primeiro estágio já está confiante eliminaria 6 das 6 regressões sem custar
    nenhum ganho. Nasceu desta comparação, então **testá-la no mesmo conjunto que
@@ -273,10 +292,17 @@ consultas:
 | aprendida@0,5 | 14/30 | 0,500 | 0,491 [0,400; 0,567] | **P44** | 0,56 |
 | regras | 23/30 | 0,533 | 0,572 [0,500; 0,633] | **P8** | 0,92 |
 
-A política aprendida **é** o acaso (P44), não empata com ele por pouco. E a
-heurística escrita à mão **anti-seleciona**: no orçamento dela é pior que 92% dos
-sorteios de mesmo tamanho. Achado novo e útil — a regra "óbvia" escolhe
-sistematicamente errado.
+Leitura correta, mais modesta que a primeira redação: **neste conjunto, a
+política não apresentou desempenho distinguível da seleção aleatória de mesmo
+orçamento**. Isso é ausência de evidência de superioridade, **não** equivalência
+ao acaso — com n=30 e 14 acionadas, o intervalo nulo é largo o bastante para
+acomodar uma política moderadamente boa. A heurística à mão parece
+**anti-selecionar** (percentil 8), o que é um alerta útil para quem fosse
+implementar a regra óbvia sem medir, ainda que com este n nem esse sinal seja
+conclusivo.
+
+O rótulo positivo é **elevação do Success@1** naquela consulta; `gain == 0` conta
+como negativo.
 
 **Sobre a margem do oráculo:** +0,300 contra +0,267 é **uma consulta** de
 diferença (nove melhorias líquidas contra oito). O que é amplo não é a qualidade,
