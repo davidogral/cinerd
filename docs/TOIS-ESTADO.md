@@ -40,8 +40,19 @@ O que a v1.1 acrescentou à v1.0, seguindo a orientação:
   não é reconstruível por terceiros.
 
 > Congelado com a árvore de trabalho suja (`uncommitted_at_freeze: true`, e o
-> registro diz isso). O SHA-256 do arquivo é a âncora real, mas um *commit*
-> antes de abrir a coleta deixaria o registro mais forte.
+> registro diz isso). **Resolvido em `protocolo-v1-2-ancora.json`**, criado antes
+> de abrir a janela de coleta: mesmo arquivo, **mesmo SHA-256**, agora com
+> `uncommitted_at_freeze: false` e apontando para um *commit* que contém o texto
+> congelado. O registro do pré-registro (`protocolo-v1-2.json`,
+> 2026-09-19T02:20:33Z) **não foi sobrescrito** de propósito — sobrescrevê-lo
+> trocaria o instante do congelamento por um posterior às medições, que é
+> exatamente o contrário de fortalecer. É a **igualdade dos dois SHA-256** que
+> prova que o texto não mudou.
+>
+> Se o PR for *squash-merged*, o *commit* da âncora deixa de existir em `main`;
+> nesse caso rodar de novo, uma vez, já em `main`:
+> `python -m experiments.freeze docs/PROTOCOLO-TOIS.md --label protocolo-v1-2-ancora --note "..."`.
+> O SHA-256 tem de sair idêntico — se não sair, o texto mudou e é desvio de §10.
 
 ### 2. Orçamento: intercalar sem confundir dia com condição
 
