@@ -90,6 +90,7 @@ from eval import metrics as M  # noqa: E402
 from eval.dataset import dataset_sha1, load_queries  # noqa: E402
 from eval.pipelines import make_ctx, raw_channels  # noqa: E402
 from experiments import features as F  # noqa: E402
+from experiments import llm_client  # noqa: E402
 from experiments.llm_client import LLMRunner, QuotaExhausted, load_prices  # noqa: E402
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -359,6 +360,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--sample", type=int, default=None, help="usa só as N primeiras consultas do split")
     ap.add_argument("--repeats", type=int, default=0, help="repetições SEM cache, para medir variabilidade (§7.3)")
     ap.add_argument("--prices", help="JSON de preço por milhão de tokens, por modelo")
+    ap.add_argument(
+        "--provider",
+        choices=["groq", "local"],
+        default="groq",
+        help="groq = o modelo de produção; local = MLX nesta máquina (sem cota, pesos fixados por hash)",
+    )
     ap.add_argument("--out", help="caminho do JSON (default: experiments/results/<stamp>__factorial-<split>.json)")
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--resume", help="JSON de uma execução anterior; retoma as consultas que faltam")
@@ -378,8 +385,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     from core import query_llm
     from retrieval.search_engine import SearchEngine
 
-    if not query_llm.is_configured():
-        raise SystemExit("GROQ_API_KEY ausente/desligada — este experimento exige o provedor real.")
+    if args.provider == "groq" and not query_llm.is_configured():
+        raise SystemExit("GROQ_API_KEY ausente/desligada — use --provider local ou configure a chave.")
 
     conds = [c.strip() for c in args.conditions.split(",")]
     for c in conds:
@@ -392,8 +399,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         queries = queries[: args.sample]
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%SZ")
-    run_id = f"{stamp}__factorial-{args.split}"
-    runner = LLMRunner(run_id, prices=load_prices(args.prices))
+    sufixo = "" if args.provider == "groq" else f"-{args.provider}"
+    run_id = f"{stamp}__factorial-{args.split}{sufixo}"
+    runner = LLMRunner(run_id, prices=load_prices(args.prices), provider=args.provider)
 
     print(f"» motor de busca… ({len(queries)} consultas de {args.split}, pool={pool})")
     engine = SearchEngine(rerank=False)
@@ -464,7 +472,18 @@ def main(argv: Optional[list[str]] = None) -> int:
             "dataset_sha1": dataset_sha1(),
             "conditions": conds,
             "pool": pool,
-            "models": {"understand": query_llm.GROQ_MODEL, "confirm": query_llm.GROQ_RERANK_MODEL},
+            "provider": args.provider,
+            "models": (
+                {"understand": query_llm.GROQ_MODEL, "confirm": query_llm.GROQ_RERANK_MODEL}
+                if args.provider == "groq"
+                else {
+                    "understand": llm_client.LOCAL_MODEL,
+                    "confirm": llm_client.LOCAL_MODEL,
+                    "revision": llm_client._local_cache.get("revision"),
+                    "thinking": False,
+                    "quantization": "4-bit (MLX)",
+                }
+            ),
             "prompt_sha256": {
                 "understand": hashlib.sha256(query_llm._SYSTEM.encode("utf-8")).hexdigest(),
                 "confirm": hashlib.sha256(query_llm._RERANK_SYSTEM.encode("utf-8")).hexdigest(),

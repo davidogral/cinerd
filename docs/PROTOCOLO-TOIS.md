@@ -7,13 +7,15 @@
 
 | Campo | Valor |
 |---|---|
-| Versão | **1.1** |
+| Versão | **1.2** |
 | Data de redação | 2026-09-18 |
-| Estado | **a congelar nesta versão** — `python -m experiments.freeze docs/PROTOCOLO-TOIS.md --label protocolo-v1` |
-| Registro de congelamento | `experiments/frozen/protocolo-v1.json` (caminho, SHA-256, commit, data) |
-| Verificação | `python -m experiments.freeze --verify experiments/frozen/protocolo-v1.json` |
+| Estado | **congelado** — `experiments/frozen/protocolo-v1-2.json` |
+| Registro anterior | `experiments/frozen/protocolo-v1.json` (v1.1; agora reporta "MUDOU", como deve — ver §10) |
+| Texto da v1.1 | preservado no commit `d20af92` |
+| Verificação | `python -m experiments.freeze --verify experiments/frozen/protocolo-v1-2.json` |
 | Plano de origem | `Plano_Cinerd_para_ACM_TOIS.pdf` (orientador, 18 set 2026) |
 | Mudanças na v1.1 | §6.1 (regra de abertura do teste), §7.3 (execução distribuída por dias), §7.4 (*prior* de popularidade), §7.5 (domínio externo), §11.1 (o que **não** pode ser afirmado hoje) |
+| Mudanças na v1.2 | §7.3 (dois provedores, papéis distintos) — ver §10 |
 
 ---
 
@@ -230,6 +232,18 @@ falha, espera por controle de vazão, custo sob a tabela de preços declarada e
 SHA-256 da resposta bruta. Registrado por célula: `measured_utc`. Isso permite
 testar deriva entre dias depois, em vez de supor que não houve.
 
+**Dois provedores, papéis distintos.** As células primárias — as que sustentam
+as comparações de §8.2 — rodam no **modelo hospedado que está em produção**, para
+que o que se reporta seja o sistema no ar. As partes caras em cota (repetições
+sem cache, varreduras de *pool*, exploração sobre o conjunto prospectivo) podem
+rodar num **modelo local de pesos abertos**, fixado por *commit hash*. Isso
+acrescenta uma condição, não substitui nenhuma, e traz um ganho que dinheiro não
+compra: **um revisor consegue reexecutar a etapa de LLM**, o que hoje é
+impossível com um modelo hospedado que muda sem aviso (o próprio não-determinismo
+a temperatura zero já está documentado). Toda tabela declara qual provedor
+produziu quais números; misturar provedores dentro de uma mesma comparação é
+desvio a registrar em §10.
+
 **Orçamento do provedor é parte do desenho, não detalhe de execução.** Medido em
 2026-09-18: a etapa de confirmação consome ~1.960 *tokens* de entrada por consulta
 (pool de 20 candidatos com sinopse inteira), contra uma cota gratuita de 200 mil
@@ -353,7 +367,11 @@ efeito esperado sobre as conclusões.
 
 | Data | Item alterado | Motivo | Efeito |
 |---|---|---|---|
-| — | — | — | — |
+| 2026-09-19 | §7.3 — acrescentado "Dois provedores, papéis distintos" | A cota do provedor hospedado limita as partes caras do desenho (repetições sem cache, varreduras de *pool*). Um modelo local de pesos abertos remove o limite **e** torna a etapa de LLM reexecutável por um revisor, o que hoje é impossível. | **Restringe, não afrouxa.** Passa a ser obrigatório que as células primárias de §8.2 rodem no modelo de produção, e que toda tabela declare o provedor. Nenhuma RQ, desfecho, amostragem ou regra de abertura mudou. Texto da v1.1 preservado em `d20af92`. |
+
+> **Este desvio foi detectado pelo próprio mecanismo**, não pela memória de quem
+> editou: `experiments/freeze.py --verify` acusou o SHA-256 divergente antes do
+> registro ser refeito. É para isso que o congelamento serve.
 
 ---
 

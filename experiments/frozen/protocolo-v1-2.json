@@ -1,0 +1,12 @@
+{
+  "label": "protocolo-v1-2",
+  "path": "docs/PROTOCOLO-TOIS.md",
+  "sha256": "98173d7a100b7f027b4377f88c27c014bdae284793dc92293eccbd563625a327",
+  "bytes": 25673,
+  "frozen_utc": "2026-09-19T02:20:33Z",
+  "git_commit": "4e04b2970a0a1e9daa161d5a3494a9c1f58cb89b",
+  "git_commit_short": "4e04b29",
+  "git_branch": "main",
+  "uncommitted_at_freeze": true,
+  "note": "v1.2: acrescenta a política de dois provedores em §7.3; desvio registrado em §10; v1.1 preservada no commit d20af92"
+}
