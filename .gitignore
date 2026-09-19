@@ -109,3 +109,27 @@ data/quality_report.json
 
 # MovieLens (baixado por recommender/ingest_movielens.py)
 data/movielens_cache/
+
+# ==============================
+# ARTIGO ACADÊMICO (rascunho local, não publicado no repo)
+# ==============================
+artigo.tex
+artigo.pdf
+artigo.aux
+artigo.log
+artigo.out
+artigo.fdb_latexmk
+artigo.fls
+artigo.synctex.gz
+figuras-artigo/
+
+# ==============================
+# INSTRUÇÕES PARA AGENTES (local, cópia das regras do ai-memory)
+# ==============================
+/CLAUDE.md
+
+# ==============================
+# ESTUDO TOIS (experiments/) — dado real anonimizado e respostas do provedor
+# ==============================
+experiments/data/
+experiments/results/ledger/

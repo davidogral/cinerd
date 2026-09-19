@@ -1,0 +1,12 @@
+{
+  "label": "anotacao-v1",
+  "path": "docs/PROTOCOLO-ANOTACAO.md",
+  "sha256": "c1465fbe2320c95c461f63c5aeb3c5edba8173f88df1d777313565411a983a47",
+  "bytes": 3870,
+  "frozen_utc": "2026-09-19T00:06:09Z",
+  "git_commit": "5c02c5307633cdadc6ef4a40b2172425a09e14ab",
+  "git_commit_short": "5c02c53",
+  "git_branch": "main",
+  "uncommitted_at_freeze": true,
+  "note": "guia dos anotadores congelado junto do protocolo v1.1; define graus de relevância e o rótulo de cobertura da fonte"
+}
