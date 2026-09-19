@@ -185,8 +185,13 @@ def main(argv: Optional[list[str]] = None) -> int:
         c = counts.get(key, 0)
         print(f"| {ERROR_LABELS[key]} | {c} | {c / n:.1%} |")
     print("\nA leitura que importa para o desenho do sistema: erro de RECUPERAÇÃO é teto")
-    print("do primeiro estágio (aumentar o pool ou o recall), erro de EVIDÊNCIA é teto da")
-    print("fonte de texto (sinopse curta), e só o erro de JULGAMENTO é do verificador.")
+    print("do primeiro estágio (aumentar o pool ou o recall), erro de EVIDÊNCIA seria teto")
+    print("da fonte de texto, e só o erro de JULGAMENTO é do verificador.")
+    print("\nRESSALVA: a separação evidência/julgamento é um proxy por cobertura literal de")
+    print("pista, e a comparação entre provedores mostrou que ele é fraco — as mesmas")
+    print("consultas, com o mesmo texto, deram 1 erro de 'evidência' no modelo de 27B e 10")
+    print("no de 8B. Texto insuficiente não depende do modelo; julgamento depende. Ler como")
+    print("'candidato a erro de evidência' até existir o rótulo humano (protocolo §5).")
 
     # 4. teto de recuperação
     in_pool = sum(1 for r in rows if r["target_in_pool"])

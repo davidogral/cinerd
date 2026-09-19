@@ -15,6 +15,10 @@ Atualizado em **2026-09-19**.
 | 3 | **Prior 0,35 vs 0,90** | **medido e decidido: fica 0,35** | `eval/prior_sweep.py`, protocolo §7.4 |
 | 4 | **Domínio externo (RQ3)** | **desenhado**: livros, política congelada em filmes | protocolo §7.5 |
 
+> **Eixo "muda o modelo" da RQ3: executado.** Ver "Trocar o verificador mata o
+> ganho" abaixo — o contraste 27B hospedado × 8B local foi medido e é resultado,
+> não infraestrutura.
+
 ### 1. Protocolo congelado
 
 Versão **1.1**, congelada em 2026-09-19 com SHA-256 e *commit* registrados
@@ -185,6 +189,64 @@ A única regressão tem mecanismo próprio, que vale descrever no artigo: o alvo
 **foi** confirmado, mas junto com outro candidato que veio antes na ordem de
 confiança — a confirmação múltipla reordena e pode rebaixar um #1 que já estava
 certo. É dano **sem** confirmação falsa.
+
+### Trocar o verificador mata o ganho — e o plano do modelo local
+
+O piloto com `--provider local` (Qwen3-8B em 4 bits, MLX) foi feito para liberar
+as partes caras do desenho. **Não serve para isso**, e o motivo é um resultado.
+
+Mesmas 30 consultas, mesmo *prompt*, mesmo *pool*, mesmo primeiro estágio. As
+células sem verificador confirmam que a comparação está limpa: **C00 coincide em
+30/30** e C10 em 29/30.
+
+| | hospedado (27B) | local (8B, 4 bits) |
+|---|---:|---:|
+| Δ Success@1 (C11−C00) | **+0,267** [+0,100; +0,433] | **−0,033** [−0,233; +0,200] |
+| melhoradas / pioradas | 9 / 1 | 5 / 6 |
+| confirmou o alvo | 20/30 | 15/30 |
+| **confirmações falsas** | **4** | **14** |
+| recusou-se a confirmar | 6 | 1 |
+| confirmados por consulta | 1 (em 21) | 2–3 (em 29) |
+
+Diferença direta entre os dois verificadores: **−0,300 de Success@1, IC [−0,467;
+−0,133]**.
+
+**O mecanismo não é o óbvio.** O modelo menor não perdeu a capacidade de
+*encontrar* — quando o alvo estava no pool abaixo do #1, ele ainda promove
+corretamente em 5 das 9 consultas dessa faixa. Ele perdeu a capacidade de
+**recusar**: confirma 2–3 candidatos em 29 das 30, contra 1 candidato em 21 e
+recusa total em 6 do modelo maior, apesar de o prompt mandar devolver lista vazia
+quando nada corresponde. Como confirmar vários **reordena** o topo, a
+super-confirmação destrói justamente onde não havia nada a ganhar: **as 6
+consultas pioradas tinham o #1 já correto**.
+
+**Três consequências:**
+
+1. **O plano de rodar `object`/`entity` localmente está morto.** O modelo local
+   mede um sistema diferente. Essas execuções continuam dependendo da cota do
+   Groq, distribuídas por dias.
+2. **Virou resultado de RQ3, que é melhor do que era o plano.** O ganho da
+   confirmação **não é propriedade da técnica**, é do verificador. Um leitor com
+   um modelo aberto de 8B — a opção natural de quem não tem orçamento de API —
+   **não reproduz** o número do artigo. Isso delimita o alcance da afirmação e
+   entrou na Seção V do artigo.
+3. **Uma hipótese de desenho, não testada:** proibir a reordenação quando o
+   primeiro estágio já está confiante eliminaria 6 das 6 regressões sem custar
+   nenhum ganho. Nasceu desta comparação, então **testá-la no mesmo conjunto que
+   a sugeriu seria o reuso adaptativo que o próprio artigo critica**. Fica para o
+   prospectivo.
+
+### O rótulo automático de "erro de evidência" é fraco — e foi isto que mostrou
+
+A separação evidência/julgamento usa um limiar de cobertura literal de pista. As
+mesmas consultas, com os mesmos textos e portanto a mesma cobertura, deram **1**
+erro de evidência com o 27B e **10** com o 8B. Texto insuficiente não depende do
+modelo; julgamento depende. Logo parte do que o proxy atribuiu à fonte era
+julgamento.
+
+O instrumento correto é o **rótulo humano de cobertura da fonte** do protocolo §5
+(`experiments/annotate.py`). Até ele existir, a coluna é indicativa, e isso está
+declarado no código, na saída do `taxonomy.py` e nas limitações do artigo.
 
 ### Política seletiva: resultado negativo nesta amostra
 
