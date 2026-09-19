@@ -1,0 +1,108 @@
+{
+  "policies": {
+    "nunca (não chama)": {
+      "fraction_called": 0.0,
+      "fraction_locked": 0.0,
+      "success@1": 0.3158,
+      "delta_vs_never": 0.0,
+      "ndcg@10_lo": 0.4796,
+      "ndcg@10_hi": 0.4796,
+      "helped": 0,
+      "hurt": 0
+    },
+    "sempre, com autoridade (produção hoje)": {
+      "fraction_called": 1.0,
+      "fraction_locked": 0.0,
+      "success@1": 0.4386,
+      "delta_vs_never": 0.1228,
+      "ndcg@10_lo": 0.5548,
+      "ndcg@10_hi": 0.5548,
+      "helped": 7,
+      "hurt": 0
+    },
+    "sempre, travado": {
+      "fraction_called": 1.0,
+      "fraction_locked": 1.0,
+      "success@1": 0.3158,
+      "delta_vs_never": 0.0,
+      "ndcg@10_lo": 0.4816,
+      "ndcg@10_hi": 0.5095,
+      "helped": 0,
+      "hurt": 0
+    },
+    "oráculo de 3 ações (teto, não implementável)": {
+      "fraction_called": 0.1228,
+      "fraction_locked": 0.0,
+      "success@1": 0.4386,
+      "delta_vs_never": 0.1228,
+      "ndcg@10_lo": 0.5315,
+      "ndcg@10_hi": 0.5315,
+      "helped": 7,
+      "hurt": 0
+    },
+    "trava@corte (cv5)": {
+      "fraction_called": 1.0,
+      "fraction_locked": 0.193,
+      "success@1": 0.4211,
+      "delta_vs_never": 0.1053,
+      "ndcg@10_lo": 0.546,
+      "ndcg@10_hi": 0.5483,
+      "helped": 6,
+      "hurt": 0,
+      "tau_note": "cortes por fold: 0.230, 0.217, 0.226, 0.226, 0.228",
+      "null": {
+        "n_perm": 10000,
+        "null_mean": 0.415,
+        "null_ci_low": 0.386,
+        "null_ci_high": 0.4386,
+        "observed": 0.4211,
+        "percentile": 79.5,
+        "p_one_sided": 0.2053
+      }
+    },
+    "portao@corte (cv5)": {
+      "fraction_called": 0.807,
+      "fraction_locked": 0.0,
+      "success@1": 0.4211,
+      "delta_vs_never": 0.1053,
+      "ndcg@10_lo": 0.5495,
+      "ndcg@10_hi": 0.5495,
+      "helped": 6,
+      "hurt": 0,
+      "tau_note": "cortes por fold: 0.230, 0.217, 0.226, 0.226, 0.228"
+    }
+  },
+  "run": {
+    "kind": "protect",
+    "n": 57,
+    "splits": [
+      "entity",
+      "object"
+    ],
+    "cond": "C11",
+    "feature": "r_margin_1_2_rel",
+    "cv": 5,
+    "seed": 20260919,
+    "inputs": [
+      "experiments/results/2026-09-19T16-35-29Z__factorial-entity.json",
+      "experiments/results/2026-09-19T16-37-51Z__factorial-object.json"
+    ],
+    "exploratory": true
+  },
+  "mechanism": {
+    "recuperaveis": 0,
+    "recuperaveis_qids": [],
+    "recuperaveis_com_confirmacao_falsa": 0,
+    "perdiveis": 7,
+    "perdiveis_qids": [
+      "v3-entity-008",
+      "v3-entity-017",
+      "v3-object-006",
+      "v3-object-021",
+      "v3-object-022",
+      "v3-object-023",
+      "v3-object-024"
+    ],
+    "nota": "a trava incondicional recupera todas as recuperáveis e perde todas as perdíveis; o sinal de confiança existe para separar as duas."
+  }
+}

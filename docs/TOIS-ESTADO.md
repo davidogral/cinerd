@@ -15,9 +15,11 @@ Atualizado em **2026-09-19**.
 | 3 | **Prior 0,35 vs 0,90** | **medido e decidido: fica 0,35** | `eval/prior_sweep.py`, protocolo §7.4 |
 | 4 | **Domínio externo (RQ3)** | **desenhado**: livros, política congelada em filmes | protocolo §7.5 |
 
-> **Eixo "muda o modelo" da RQ3: executado.** Ver "Trocar o verificador mata o
-> ganho" abaixo — o contraste 27B hospedado × 8B local foi medido e é resultado,
-> não infraestrutura.
+> **Eixo "muda o modelo" da RQ3: executado nos três splits `v3`.** O contraste
+> 27B hospedado × 8B local é resultado, não infraestrutura — e o efeito **depende
+> do split**: destrói o ganho onde o primeiro estágio já acertava muito (`hard`,
+> `entity`) e é indistinguível onde quase nunca acertava (`object`). Ver "O dano
+> da confirmação é proporcional à precisão do primeiro estágio".
 
 ### 1. Protocolo congelado
 
@@ -106,12 +108,12 @@ não transferir, a contribuição é documentar em quais condições falha.
 
 | Fase | Entrega do plano | Estado | Onde |
 |---|---|---|---|
-| **1. Protocolo** | RQ1–RQ3, desfechos, amostra, critérios, baselines, orçamento, plano estatístico | **escrito, falta congelar** | [`PROTOCOLO-TOIS.md`](PROTOCOLO-TOIS.md), [`PROTOCOLO-ANOTACAO.md`](PROTOCOLO-ANOTACAO.md) |
+| **1. Protocolo** | RQ1–RQ3, desfechos, amostra, critérios, baselines, orçamento, plano estatístico | **congelado (v1.2)** | [`PROTOCOLO-TOIS.md`](PROTOCOLO-TOIS.md), [`PROTOCOLO-ANOTACAO.md`](PROTOCOLO-ANOTACAO.md) |
 | **2. Coleta** | consultas prospectivas + rótulos independentes + concordância + auditoria de direitos | **ferramenta pronta, dado não existe** | `experiments/collect.py`, `experiments/annotate.py` |
-| **3. Instrumentação** | C00–C11 nos mesmos IDs; respostas brutas, hashes, custos, repetições | **pronta e em execução** | `experiments/factorial.py`, `experiments/llm_client.py` |
+| **3. Instrumentação** | C00–C11 nos mesmos IDs; respostas brutas, hashes, custos, repetições | **os 3 splits `v3` fechados; repetições §7.3 pendentes de cota** | `experiments/factorial.py`, `experiments/llm_client.py` |
 | **3b. Estatística** | diferença + IC, potência, multiplicidade | **feito e aplicado** | `eval/stats.py` |
 | **3c. Baselines** | RRF, fusão treinável, cross-encoder, LLM para todos | **feito e medido** | `eval/pipelines.py`, `eval/train_fusion.py` |
-| **4. Política** | regras, modelo simples, calibração, fronteira qualidade–custo | **implementada; resultado negativo no histórico** | `experiments/policy.py`, `experiments/features.py` |
+| **4. Política** | regras, modelo simples, calibração, fronteira qualidade–custo | **medida em 87 consultas: P78 do nulo, ainda abaixo do portão** | `experiments/policy.py`, `experiments/features.py`, `experiments/protect.py` |
 | **5. Teste e transferência** | abertura única do teste lacrado + domínio externo | **bloqueada pela fase 2** | — |
 | **6. Manuscrito** | artigo novo em inglês, formato ACM, suplemento | **não iniciado (portão do plano)** | `artigo.tex` (hoje IEEEtran, pt-BR) |
 
@@ -153,11 +155,9 @@ meta de 300–500 do plano.
 
 ### Fatorial 2×2 no split `hard` (30 consultas, 0% de falha de chamada)
 
-> `entity` está **parcial e válido** (14 de 20 consultas, 0% de falha): efeito A
-> zero de novo, efeito B +0,071 em Success@1 com IC [0,000; 0,214] tocando zero —
-> 1 consulta melhora, 0 pioram, 13 inalteradas, e 9 das 14 já estavam em #1.
-> Preliminar, não reportável. `object` não começou: cota esgotada na 1ª consulta.
-> Os dois retomam com `--resume`.
+> **`entity` e `object` foram executados em 2026-09-19** (ver a seção seguinte).
+> `entity` fechou 20/20; `object` parou em 37/42 pela cota diária e retoma com
+> `--resume`. Ambos com 0% de falha de chamada.
 
 | condição | LLM entende a consulta | LLM confirma o top-20 | nDCG@10 | Success@1 |
 |---|---|---|---:|---:|
@@ -169,6 +169,96 @@ meta de 300–500 do plano.
 - **Efeito do entendimento de consulta: exatamente zero** (0 ganhos, 0 perdas, 30 inalteradas). Nenhuma consulta do `hard` é classificada como "objeto", então nada é acrescentado ao texto. O número 0,473 → 0,654 que o artigo reporta é **inteiramente** da confirmação.
 - **Efeito da confirmação: +0,267 em Success@1**, IC 95% [+0,100; +0,433] (9 melhoram, 1 piora, 20 não mudam).
 - **Interação: zero.** As duas etapas não se reforçam nem se atrapalham neste split.
+
+### O fatorial nos três splits `v3` — e o fim da etapa de entendimento
+
+`entity` (20/20) e `object` (37/42, cota) fecharam em 2026-09-19, com o
+verificador hospedado e 0% de falha de chamada.
+
+| split | n | C00 | C10 | C01 | C11 | efeito A | efeito B [IC 95%] |
+|---|---:|---:|---:|---:|---:|---:|---|
+| `hard` | 30 | 0,367 | 0,367 | 0,633 | 0,633 | +0,000 | **+0,267** [+0,100; +0,433] |
+| `entity` | 20 | 0,550 | 0,550 | 0,650 | 0,650 | +0,000 | **+0,100** [+0,000; +0,250] |
+| `object` | 37 | 0,162 | 0,189 | 0,324 | 0,324 | +0,027 | **+0,162** [+0,054; +0,297] |
+
+`Success@1`; efeito A = entendimento de consulta, efeito B = confirmação.
+
+**A etapa de entendimento de consulta não sobreviveu ao seu próprio split.**
+`object` foi construído justamente para exercitá-la — consultas que descrevem um
+objeto em cena ("Nissan Skyline azul e prata arrancada"), que é o caso para o
+qual as `pistas_objeto` existem. O efeito é **+0,027, ou seja uma única consulta
+em 37**, com IC [+0,000; +0,081] e p (Holm) = 0,72. Somando os três splits:
+**1 consulta melhorou em 87**, nenhuma piorou.
+
+A leitura que o artigo deve sustentar é estreita e negativa: nas 87 consultas
+medidas, **a reescrita de consulta por LLM é indistinguível de não fazer nada**,
+e todo o ganho atribuído a "LLM no circuito" é da etapa de confirmação. Isso não
+é o mesmo que "reescrita de consulta não funciona": é que **esta** reescrita,
+com **este** modelo, neste conjunto, não mudou o ranking.
+
+Efeito da confirmação, por outro lado, é positivo nos três splits e o IC exclui
+zero em dois deles.
+
+### O dano da confirmação é proporcional à precisão do primeiro estágio
+
+Rodando também o verificador local (8B em 4 bits, **sem cota**) em `entity` e
+`object`, com o contraste limpo C01−C00 (etapa A desligada dos dois lados):
+
+| split | verificador | n | #1 já certo | sem | com | Δ | estragou um #1 certo | confirm. falsas | confirmados/consulta | recusas |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `hard` | 27B hospedado | 30 | 11 | 0,367 | 0,633 | **+0,267** | 1 | 4 | 0,90 | 6 |
+| `hard` | 8B local | 30 | 11 | 0,367 | 0,333 | **−0,033** | **6** | 14 | 2,23 | 1 |
+| `entity` | 27B hospedado | 20 | 11 | 0,550 | 0,650 | **+0,100** | 0 | 1 | 2,45 | 1 |
+| `entity` | 8B local | 20 | 11 | 0,550 | 0,500 | **−0,050** | 2 | 3 | 3,20 | 0 |
+| `object` | 27B hospedado | 37 | 6 | 0,162 | 0,324 | **+0,162** | 0 | 6 | 0,95 | 17 |
+| `object` | 8B local | 37 | 6 | 0,162 | 0,270 | **+0,108** | 2 | 17 | 2,11 | 6 |
+
+(as duas últimas linhas estão no mesmo recorte de 37 consultas; a posição no
+primeiro estágio é idêntica em **37/37**, então a única coisa que muda é quem
+julga. A execução local completa de `object` tem 42 consultas e dá +0,167.)
+
+**O comportamento do modelo menor é constante; a consequência não é.** Ele
+confirma 2–3 candidatos por consulta e quase não recusa em todos os splits — mas
+confirma o alvo tantas vezes quanto o maior (14/37 nos dois, em `object`). O que
+varia é o **preço** dessa super-confirmação, e o preço é a precisão do primeiro
+estágio: onde o #1 já costuma estar certo (`entity`, 0,55) reordenar destrói; onde
+quase nunca está (`object`, 0,16) não há o que destruir e o ganho se transfere.
+
+**Correção de uma afirmação anterior.** "Trocar o verificador mata o ganho" foi
+escrito a partir do `hard`. Em `object` a diferença hospedado−local é
+**−0,054, IC [−0,135; +0,000], p = 0,27** — indistinguível. A afirmação
+sustentada passa a ser: *a super-confirmação do modelo menor custa caro na
+proporção em que o primeiro estágio já acertava*, e não *o modelo menor não
+serve*.
+
+### Proteção do primeiro resultado: medida, e sem material no provedor de produção
+
+`experiments/protect.py` (novo) recomputa, **sem nenhuma chamada nova**, o que
+aconteceria se a confirmação valesse como evidência mas **não** pudesse mexer no
+#1 do primeiro estágio. `Success@1` sai exato — travado, o alvo está em #1 se e
+somente se já estava; `nDCG@10` sai como intervalo, porque a posição do item
+travado dentro da lista promovida não é gravada.
+
+O módulo **recusa** entrada do split `hard`: foi ele que gerou a hipótese.
+
+| conjunto | verificador | recuperáveis | perdíveis | trava@corte (cv5) | percentil no nulo |
+|---|---|---:|---:|---:|---:|
+| `entity`+`object` (57) | 27B hospedado | **0** | 7 | +0,105 (vs +0,123 sem trava) | P80 |
+| `entity`+`object` (62) | 8B local | 4 | 10 | +0,081 (vs +0,097 sem trava) | **P94** (p = 0,060) |
+
+**No verificador de produção não há o que proteger.** O evento que a trava
+existe para evitar — a reordenação rebaixar um #1 já correto — aconteceu **1 vez
+em 87 consultas** medidas com o 27B (30 `hard` + 20 `entity` + 37 `object`) (a única regressão do `hard`). Com base de
+~1%, nem o conjunto prospectivo de 300–500 consultas resolve essa pergunta para
+o modelo hospedado.
+
+**A trava é uma garantia de robustez, não uma melhoria de qualidade**, e o lugar
+dela no artigo é o eixo "muda o modelo" da RQ3: ela protege quem roda o pipeline
+com um verificador mal calibrado. No verificador local o sinal aparece (P94), e
+continua abaixo do portão de §8.4.
+
+E o portão simples empata com a trava gastando menos: `portao@corte` chega ao
+mesmo `Success@1` com **45%** das chamadas no local e **81%** no hospedado.
 
 ### Taxonomia de ganhos e danos (`experiments/taxonomy.py`)
 
@@ -375,30 +465,128 @@ PDF.**
 2. **Dois anotadores humanos.** Ainda não recrutados. Sem eles não há relevância
    graduada, não há concordância e não há como separar "resposta válida
    diferente" de "erro".
-3. **Cota do provedor — quantificada, e agora com processo.** Dois limites:
-   ~7.000 tokens de entrada por **minuto** (resolvido com controle de vazão) e
-   **200 mil por dia** (não tem como contornar). O fatorial completo precisa de
-   ~4–6 dias de cota gratuita, ou do Dev Tier — distribuir por dias é
-   metodologicamente aceitável (frente 2), então isto deixou de ser bloqueio e
-   virou cronograma: `hard` pronto, `entity` 14/20, `object` 0/42.
-4. **Domínio externo (RQ3).** Precisa de uma decisão sobre qual: séries/episódios,
-   livros, ou busca documental. Nenhum dataset escolhido.
+3. **Cota do provedor — virou cronograma.** Dois limites: ~7.000 tokens de
+   entrada por **minuto** (resolvido com controle de vazão) e **200 mil por dia**
+   (não tem como contornar). Estado em 2026-09-19: `hard` 30/30, `entity` 20/20,
+   `object` **37/42** — a cota estourou na 38ª consulta. Faltam 5 consultas
+   (~10 mil tokens) e as repetições de §7.3 (~100 mil).
+4. **Domínio externo (RQ3) — dataset identificado, não baixado.** Ver "Domínio
+   externo: o candidato concreto" abaixo. A decisão que falta é do Davi.
 
 ## Próximos passos, na ordem
 
-1. ~~Congelar o protocolo~~ — **feito** (v1.1, 2026-09-19). Um `git commit` antes
-   de abrir a coleta deixaria o registro mais forte (foi congelado com a árvore suja).
-2. Abrir a janela de coleta prospectiva e deixar rodando (`experiments/collect.py` já lê o log).
-3. Recrutar os dois anotadores e rodar um piloto de anotação com ~30 consultas,
-   só para medir κ e ajustar o guia antes da anotação em escala.
-4. Decidir o orçamento do provedor (distribuir por dias ou pagar o Dev Tier) e
-   completar o fatorial nos 5 *splits* — `hard` está pronto e válido; `entity` e
-   `object` pararam na cota diária. Depois rodar `experiments/policy.py` sobre o
-   conjunto todo: com ~140 consultas em vez de 30, a pergunta da RQ2 passa a ter
-   alguma chance de resposta antes de gastar a coleta prospectiva com ela.
-5. Decidir o domínio externo da RQ3.
-6. **Só então** a fase 6 (manuscrito em inglês, formato ACM). O plano é explícito:
-   submissão só se a contribuição sobreviver aos controles fortes.
+Os cinco itens combinados com o Davi em 2026-09-19, com o estado de cada um.
+
+### 1. Concluir `object` e `entity` — **entity feito, object 37/42**
+`entity` fechou 20/20. `object` retoma amanhã com
+`--resume experiments/results/2026-09-19T16-37-51Z__factorial-object.json`
+(5 consultas, ~10 mil tokens).
+
+### 2. Repetições do provedor (§7.3) — **ferramenta pronta, execução amanhã**
+```bash
+.venv/bin/python -m experiments.factorial --split hard \
+    --resume experiments/results/2026-09-18T18-33-42Z__factorial-hard.json --repeats 5
+.venv/bin/python -m experiments.variability experiments/results/<nova>.json
+```
+Amostra pré-definida: as **10 primeiras consultas do `hard`**, 5 passadas sem
+cache, ordem fixa. Custo ~100 mil tokens, cabe num dia junto com o item 1.
+
+**As repetições de ordem fixa só têm sentido no provedor hospedado.** Geração
+gulosa a temperatura zero com pesos fixos é determinística: repetir cinco vezes
+no modelo local devolveria cinco respostas idênticas por construção, e a taxa de
+mudança medida seria zero por um motivo que não é sobre o modelo. O que se mede
+ali é o não determinismo do **serviço** (lote, escalonamento, versão que muda
+sem aviso).
+
+**Lacuna encontrada e fechada:** §7.3 também exige *sensibilidade à ordem dos
+candidatos*, e isso não existia. `factorial.py` ganhou `--ordem embaralhada`, que
+permuta a ordem de apresentação de forma determinística por (consulta, passada) —
+o conjunto não muda e a promoção continua usando a ordem da fusão, então
+qualquer diferença é do modelo. Essa variante **roda no provedor local sem
+gastar cota**, porque sensibilidade à ordem é propriedade do modelo, não do
+serviço.
+
+### 3. Coletar e anotar o prospectivo — **caminho crítico, depende do Davi**
+Nada disso pode rodar daqui: `data/user.db` local está vazio, o log real está na
+VM. Comandos a rodar **na VM** (`~/cinerd`), em ordem:
+
+```bash
+cd ~/cinerd && git pull
+# (a) dimensionamento — NÃO é o conjunto prospectivo, só mede a taxa de chegada
+.venv/bin/python -m experiments.collect export --db data/user.db --until 2026-09-18 \
+    --out experiments/data/historico_dimensionamento.jsonl
+.venv/bin/python -m experiments.collect stats --in experiments/data/historico_dimensionamento.jsonl
+# (b) abrir a janela prospectiva, a partir do congelamento do protocolo
+.venv/bin/python -m experiments.collect export --db data/user.db --since 2026-09-19 \
+    --out experiments/data/prospective_raw.jsonl
+.venv/bin/python -m experiments.collect stats --in experiments/data/prospective_raw.jsonl
+```
+
+O JSONL já sai anonimizado (sem `user_id`, `sid` por HMAC, consulta com PII
+excluída e contada). **Não apagar `experiments/data/.salt`** na VM: ele é o que
+agrupa sessões entre exportações, e trocá-lo quebra o agrupamento no meio da
+janela.
+
+O passo (a) responde a pergunta que decide o cronograma inteiro: **quantas
+consultas elegíveis por dia o Cinerd recebe.** A meta é 300–500 (dimensionamento
+por potência já feito). Sem essa taxa não dá para dizer se a janela é de semanas
+ou de meses.
+
+Os **dois anotadores** continuam não recrutados, e sem eles não há relevância
+graduada, nem κ, nem separação entre "resposta válida diferente" e "erro".
+
+### 4. Política de acionamento e proteção do #1 — **medidas; a trava não tem material**
+Feito nesta rodada, sem gastar cota: `experiments/protect.py`. Resultados na
+seção "Proteção do primeiro resultado".
+
+Em resumo: a política aprendida subiu de **P44** (n=30) para **P78** (n=87) do
+nulo de permutação — direção certa, ainda abaixo do portão de §8.4 (p = 0,22). A
+trava do #1 **não tem o que proteger no verificador de produção**: o evento
+aconteceu 1 vez em 87 consultas. Ela é garantia de robustez contra verificador
+mal calibrado, e é assim que deve entrar no artigo.
+
+### 5. Domínio externo (RQ3) — **candidato concreto, falta decidir**
+Ver a seção seguinte.
+
+## Domínio externo: o candidato concreto
+
+A busca por viabilidade (§7.5 exige identificador estável + evidência textual por
+item) encontrou três conjuntos públicos. Nenhum foi baixado ainda.
+
+| conjunto | domínio | identificador | evidência textual | licença |
+|---|---|---|---|---|
+| **Reddit-TOMT** (`samarthbhargav/tomt-data`) | **filmes E livros** | IMDb / Goodreads | **WikiPlots** (resumos de enredo da Wikipédia) | MIT |
+| WhatsThatBook (`nlpkevinl/whatsthatbook`) | livros | ISBN-13 | `description` do Goodreads | ODC-BY (+ ToS do Goodreads) |
+| ToT Movie Identification (Microsoft) | filmes | IMDb | links Wikipédia/IMDb | CC BY-SA 4.0 |
+
+**Recomendação: Reddit-TOMT.** É o único que tem os dois domínios **com o mesmo
+processo de elicitação e o mesmo corpus de evidência** (WikiPlots). Isso remove o
+confundimento que faria a RQ3 não responder nada: com fontes diferentes para
+filmes e livros, qualquer diferença poderia ser da coleta, não do domínio.
+Formato TREC (`documents.json`, `queries.json`, `qrels.txt`) e licença MIT.
+
+**Duas ressalvas a declarar antes de usar, não depois:**
+
+1. **Contaminação.** São conjuntos públicos, possivelmente dentro do treino do
+   verificador. Um ganho medido ali pode ser memorização das *threads* resolvidas,
+   não recuperação. A coleta prospectiva do Cinerd não tem esse risco — os dois
+   testes são complementares, não substitutos.
+2. **O primeiro estágio não transfere de graça.** Dos 8 sinais da fusão, os de
+   personagem, trivia-pessoa e *prior* de popularidade não têm equivalente óbvio
+   em livros. Construir o índice de livros sobre o WikiPlots dá BM25 + embedding;
+   o que **não** transferir é resultado a documentar (§7.5), desde que declarado
+   antes.
+
+> **Nota de método que vale para o conjunto de filmes também.** O conjunto
+> histórico (234 consultas) é **escrito pelo autor**, não coletado de usuários —
+> é a raiz do "alvo da consulta mediana no percentil 99". Reddit-TOMT e o
+> conjunto da Microsoft são consultas reais de usuário e estão disponíveis
+> **agora**. Não substituem o prospectivo (que é do Cinerd, pós-congelamento e
+> sem risco de contaminação), mas atacam a mesma fraqueza sem esperar tráfego.
+
+### 6. Só então a fase 6
+Manuscrito em inglês, formato ACM. O plano é explícito: submissão só se a
+contribuição sobreviver aos controles fortes.
 
 ## O que já entrou no `artigo.tex`
 
