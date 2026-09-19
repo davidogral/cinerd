@@ -15,10 +15,12 @@ pelo protocolo do estudo (`docs/PROTOCOLO-TOIS.md`, §8.3).
 Método
 ------
 **Bootstrap pareado**: as duas condições são medidas nas *mesmas* consultas, então
-a reamostragem sorteia **consultas** (com reposição) e recalcula a diferença das
-médias dentro de cada reamostra. Isso preserva o pareamento e descarta a variância
-entre consultas, que é enorme aqui (uma consulta fácil pontua 1,0 em qualquer
-pipeline).
+a reamostragem sorteia **consultas** (com reposição) e recalcula a **média das
+diferenças pareadas** dentro de cada reamostra. Isso preserva o pareamento entre
+configurações e **incorpora a heterogeneidade entre consultas** à estimativa de
+incerteza — não a elimina. O pareamento remove o que é comum às duas condições
+numa mesma consulta (dificuldade intrínseca); o que resta, e que entra no
+intervalo, é a variação da *diferença* de consulta para consulta.
 
 `--cluster-by movie` reamostra **clusters** (todas as consultas do mesmo filme
 saem juntas) — necessário quando há dependência entre consultas, como manda o
